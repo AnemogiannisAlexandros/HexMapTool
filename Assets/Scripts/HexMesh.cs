@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Originals
+{
+
 public class HexMesh
 {
     public HexMesh() 
@@ -71,4 +74,5 @@ public class HexMesh
         mesh.RecalculateNormals();
         return mesh;
     }
+}
 }

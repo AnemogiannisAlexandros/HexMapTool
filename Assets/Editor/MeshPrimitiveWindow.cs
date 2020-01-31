@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Originals;
+using HexMesh = Originals.HexMesh;
 using UnityEditor;
 
 public class MeshPrimitiveWindow : Editor
@@ -13,7 +14,7 @@ public class MeshPrimitiveWindow : Editor
         GameObject hex = new GameObject();
         hex.AddComponent<MeshFilter>();
         hex.AddComponent<MeshRenderer>();
-        HexMesh mesh = new HexMesh();
+        Originals.HexMesh mesh = new Originals.HexMesh();
         hex.GetComponent<MeshFilter>().mesh = mesh.HexMeshData();
         hex.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Diffuse"));
         hex.transform.position = Vector3.zero;
