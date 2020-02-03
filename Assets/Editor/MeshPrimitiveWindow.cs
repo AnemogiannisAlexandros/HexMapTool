@@ -12,11 +12,14 @@ public class MeshPrimitiveWindow : Editor
     private static void CreateHex() 
     {
         GameObject hex = new GameObject();
+        hex.name = "Hex";
         hex.AddComponent<MeshFilter>();
         hex.AddComponent<MeshRenderer>();
-        Originals.HexMesh mesh = new Originals.HexMesh();
+        HexMesh mesh = new HexMesh();
         hex.GetComponent<MeshFilter>().mesh = mesh.HexMeshData();
         hex.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Diffuse"));
         hex.transform.position = Vector3.zero;
+        hex.transform.rotation = Quaternion.Euler(0, 90, 0);
+        hex.AddComponent<HexAttributes>();
     }
 }

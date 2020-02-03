@@ -1,20 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 
-public class MapGenerator : EditorWindow
+public class MapGenerator : MonoBehaviour
 {
-    [MenuItem("Tools/HexMapGenerator")]
+    [SerializeField]
+    private GameObject hexPrefab;
+    private int x,z;
+    private Vector3 startPos = Vector3.zero;
 
-    static void Init() 
+    private void Start()
     {
-        MapGenerator window = (MapGenerator)EditorWindow.GetWindow(typeof(MapGenerator));
-        window.Show();
+
+       // CreateHexMap();
     }
-
-    private void OnGUI()
+    public void CreateHexMap() 
     {
-        EditorGUILayout.LabelField("Base Settings", EditorStyles.boldLabel);
+        for (int i = 0; i < x; i++)
+        {
+            Instantiate(hexPrefab, startPos, Quaternion.identity);
+            for (int j = 0; j < z; j++)
+            {
+                startPos += new Vector3(0, 0, 1);
+                Instantiate(hexPrefab, startPos, Quaternion.identity);
+            }
+        }
     }
 }

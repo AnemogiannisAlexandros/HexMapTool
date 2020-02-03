@@ -22,18 +22,18 @@ public class HexMesh
         {
             //UpperSide
             new Vector3(0,0,0),
-            new Vector3(.5f, 0, 0),
-            new Vector3(.75f, 0, 0.5f),
-            new Vector3(.5f, 0, 1),
-            new Vector3(0,0,1),
-            new Vector3(-0.25f, 0, 0.5f),
+            new Vector3(1, 0, 0),
+            new Vector3(1.5f, 0, 1),
+            new Vector3(1, 0, 2),
+            new Vector3(0,0,2),
+            new Vector3(-0.5f, 0, 1),
             //LowerSide
             new Vector3(0,-.25f,0),
-            new Vector3(.5f, -.25f, 0),
-            new Vector3(.75f, -.25f, 0.5f),
-            new Vector3(.5f, -.25f, 1),
-            new Vector3(0,-.25f,1),
-            new Vector3(-0.25f, -.25f, 0.5f)
+            new Vector3(1, -.25f, 0),
+            new Vector3(1.5f, -.25f, 1),
+            new Vector3(1, -.25f, 2),
+            new Vector3(0,-.25f,2),
+            new Vector3(-0.5f, -.25f, 1)
         };
 
 
