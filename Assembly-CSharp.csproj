@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\HexMapTool\Scripts\HexAttributes.cs" />
     <Compile Include="Assets\HexMapTool\Scripts\HexMesh.cs" />
+    <Compile Include="Assets\HexMapTool\Scripts\InitializeTool.cs" />
     <Compile Include="Assets\HexMapTool\Scripts\MapGenerator.cs" />
     <Compile Include="Assets\HexMapTool\Scripts\MapGeneratorWindow.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
