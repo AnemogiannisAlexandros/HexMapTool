@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections;
 public class MapGenerator : ScriptableObject
 {
     public GameObject hexPrefab { get; set; }
