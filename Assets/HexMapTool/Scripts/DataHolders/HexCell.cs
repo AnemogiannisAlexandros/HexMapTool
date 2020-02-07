@@ -6,6 +6,16 @@ namespace HexMapTool
 {
     public class HexCell : MonoBehaviour
     {
-        public HexCoordinates coordinates;
+        [SerializeField]
+        private HexCoordinates coordinates;
+
+        public HexCoordinates GetCoordinates()
+        {
+            return coordinates;
+        }
+        public void SetCoordinates(HexCoordinates newCoords)
+        {
+            this.coordinates = newCoords;
+        }
     }
 }

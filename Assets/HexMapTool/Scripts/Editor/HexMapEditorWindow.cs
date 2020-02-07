@@ -8,23 +8,24 @@ namespace HexMapTool
     public class HexMapEditorWindow : EditorWindow
     {
         static HexGrid grid;
-        private static Object gridScriptableObject;
+        private static GameObject gridObject;
         [MenuItem("Window/Hex Map Tool")]
         static void Init()
         {
             HexMapEditorWindow window = (HexMapEditorWindow)EditorWindow.GetWindow(typeof(HexMapEditorWindow));
             window.Show();
-            gridScriptableObject = AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Scripts/Editor/HexMap Data.asset", typeof(HexGrid));
-            grid = (HexGrid)gridScriptableObject;
-            grid.Init();
+            
         }
+
 
         public void OnFocus()
         {
-            //if (grid == null) 
-            //{
-                
-            //}
+            if (gridObject == null)
+            {
+                grid = (HexGrid)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Prefabs/HexMap Data.asset", typeof(HexGrid));
+                //grid = CreateInstance<HexGrid>();
+                gridObject = grid.Init();
+            }
         }
 
         private void OnGUI()
@@ -32,7 +33,8 @@ namespace HexMapTool
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Hex Map Generator", EditorStyles.boldLabel);
-            gridScriptableObject =  EditorGUILayout.ObjectField(gridScriptableObject, typeof(HexGrid), true);
+            grid =  (HexGrid)EditorGUILayout.ObjectField(grid, typeof(HexGrid), true);
+            grid.OnGui();
             if (GUILayout.Button("Generate Map"))
             {
                 Debug.Log("Generating Map");
@@ -41,6 +43,7 @@ namespace HexMapTool
             if (GUILayout.Button("Clear Map"))
             {
                 Debug.Log("Deleting Map");
+                grid.DestroyGrid();
             }
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();

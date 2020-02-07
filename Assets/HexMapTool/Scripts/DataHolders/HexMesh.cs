@@ -13,12 +13,13 @@ namespace HexMapTool
 		Mesh hexMesh;
 		List<Vector3> vertices;
 		List<int> triangles;
+        MeshCollider meshCollider;
 
-		void Awake()
+		public void Init()
 		{
 			GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
-			//hexMesh.name = "Hex Mesh";
-			vertices = new List<Vector3>();
+            //hexMesh.name = "Hex Mesh";
+            vertices = new List<Vector3>();
 			triangles = new List<int>();
 		}
 
@@ -34,7 +35,11 @@ namespace HexMapTool
 			hexMesh.vertices = vertices.ToArray();
 			hexMesh.triangles = triangles.ToArray();
 			hexMesh.RecalculateNormals();
-		}
+            if (meshCollider == null)
+            {
+                meshCollider = gameObject.AddComponent<MeshCollider>();
+            }
+        }
 
 		void Triangulate(HexCell cell)
 		{

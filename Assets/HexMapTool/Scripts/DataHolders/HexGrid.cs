@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+
 namespace HexMapTool
 {
     /// <summary>
@@ -21,16 +22,25 @@ namespace HexMapTool
         [SerializeField]
         private GameObject cellLabelPrefab;
         [SerializeField]
-        Canvas gridCanvas;
+        private Canvas gridCanvas;
 
+        Canvas canvas;
+        GameObject hexCellHolder;
         GameObject hexGrid;
         HexCell[] cells;
         HexMesh hexMesh;
 
-        public void Init() 
+        public GameObject Init() 
         {
             hexGrid = new GameObject("Hex Grid");
             hexMesh = hexGrid.AddComponent<HexMesh>();
+            hexGrid.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
+            hexMesh.Init();
+            canvas = Instantiate(gridCanvas,hexGrid.transform);
+            canvas.transform.position += new Vector3(0, 0.1f, 0);
+            hexCellHolder = new GameObject("Hex Cells");
+            hexCellHolder.transform.SetParent(hexGrid.transform);
+            return hexGrid;
         }
 
         public void CreateGrid()
@@ -49,6 +59,19 @@ namespace HexMapTool
 
         }
 
+        public void DestroyGrid()
+        {
+            for (int i = canvas.transform.childCount-1; i >= 0; i--)
+            {
+                DestroyImmediate(canvas.transform.GetChild(i).gameObject);
+            }
+            for (int i = hexCellHolder.transform.childCount-1; i >= 0; i--)
+            {
+                DestroyImmediate(hexCellHolder.transform.GetChild(i).gameObject);
+            }
+            hexMesh.GetComponent<MeshFilter>().sharedMesh.Clear();
+        }
+
         private void CreateCell(int x, int z, int i)
         {
             Vector3 position;
@@ -59,18 +82,25 @@ namespace HexMapTool
             GameObject obj = Instantiate(cellPrefab);
             HexCell cell = obj.GetComponent<HexCell>();
             cells[i] = cell;
-            cell.transform.SetParent(hexGrid.transform, false);
+            cell.transform.SetParent(hexCellHolder.transform, false);
             cell.transform.localPosition = position;
-            cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+            cell.SetCoordinates(HexCoordinates.FromOffsetCoordinates(x, z));
+
+
 
             Text label = Instantiate(cellLabelPrefab).GetComponent<Text>();
-            label.rectTransform.SetParent(gridCanvas.transform, false);
+            label.rectTransform.SetParent(canvas.transform, false);
             label.rectTransform.anchoredPosition =
             new Vector2(position.x, position.z);
-            label.text = cell.coordinates.ToStringOnSeparateLines();
+            label.text = cell.GetCoordinates().ToStringOnSeparateLines();
 
-           
 
+
+        }
+        public void OnGui()
+        {
+            width = EditorGUILayout.IntField(width);
+            height = EditorGUILayout.IntField(height);
         }
     }
 }
