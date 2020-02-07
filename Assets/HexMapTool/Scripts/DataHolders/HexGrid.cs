@@ -5,33 +5,32 @@ using UnityEngine.UI;
 using UnityEditor;
 namespace HexMapTool
 {
+    /// <summary>
+    /// Our Hex Grid
+    /// </summary>
+    
+        [CreateAssetMenu(fileName = "HexMap Data",menuName = "Hexmap/Data")]
     public class HexGrid : ScriptableObject
     {
         [SerializeField]
         private int width = 6;
         [SerializeField]
         private int height = 6;
-        private HexCell cellPrefab;
+        [SerializeField]
+        private GameObject cellPrefab;
+        [SerializeField]
         private GameObject cellLabelPrefab;
+        [SerializeField]
+        Canvas gridCanvas;
 
         GameObject hexGrid;
-        Canvas gridCanvas;
         HexCell[] cells;
         HexMesh hexMesh;
 
         public void Init() 
         {
             hexGrid = new GameObject("Hex Grid");
-            GameObject cell = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Prefabs/HexCell.prefab", typeof(GameObject));
-            cellPrefab = cell.GetComponent<HexCell>();
-            Debug.Log(cellPrefab.name);
-            GameObject Canvas = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Prefabs/Hex Canvas.prefab", typeof(GameObject));
-            Debug.Log(Canvas.name);
-            gridCanvas = Canvas.GetComponent<Canvas>();
-            gridCanvas.transform.SetParent(hexGrid.transform);
-            hexMesh = new GameObject("Hex Mesh").AddComponent<HexMesh>();
-            hexMesh.transform.SetParent(hexGrid.transform);
-            cellLabelPrefab = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Prefabs/Hex Canvas.prefab", typeof(GameObject));
+            hexMesh = hexGrid.AddComponent<HexMesh>();
         }
 
         public void CreateGrid()
@@ -57,7 +56,9 @@ namespace HexMapTool
             position.y = 0f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
 
-            HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
+            GameObject obj = Instantiate(cellPrefab);
+            HexCell cell = obj.GetComponent<HexCell>();
+            cells[i] = cell;
             cell.transform.SetParent(hexGrid.transform, false);
             cell.transform.localPosition = position;
             cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);

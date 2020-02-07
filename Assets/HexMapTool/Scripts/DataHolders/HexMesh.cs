@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace HexMapTool
 {
+    /// <summary>
+    /// Mesh of a Hexagon Map
+    /// </summary>
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 	public class HexMesh : MonoBehaviour
 	{
@@ -14,7 +17,7 @@ namespace HexMapTool
 		void Awake()
 		{
 			GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
-			hexMesh.name = "Hex Mesh";
+			//hexMesh.name = "Hex Mesh";
 			vertices = new List<Vector3>();
 			triangles = new List<int>();
 		}

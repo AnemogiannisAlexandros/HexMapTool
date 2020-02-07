@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// All Available Numerical values of a hexagon
+/// </summary>
 namespace HexMapTool
 {
 
@@ -25,6 +27,7 @@ namespace HexMapTool
         {
             return inRadius;
         }
+        //all verticies of the Hexagon
         public static Vector3[] verts = {
         new Vector3(0f, 0f, outRadious),
         new Vector3(inRadius, 0f, 0.5f * outRadious),

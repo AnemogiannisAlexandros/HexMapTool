@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 784e8040d792276429b28b2f21f8c0a2, type: 3}
+  m_Name: HexMap Data
+  m_EditorClassIdentifier: 
+  width: 10
+  height: 10
+  cellPrefab: {fileID: 4761742576790607851, guid: 28252bc71ac43fc4c8ceabbc12cffe4d,
+    type: 3}
+  cellLabelPrefab: {fileID: 841501011109548257, guid: d56e30c5bed7f0444aa4ca46ed25ac9d,
+    type: 3}
+  gridCanvas: {fileID: 7824583451469933440, guid: 1882d8ed81a256e4cba89308022168e9,
+    type: 3}

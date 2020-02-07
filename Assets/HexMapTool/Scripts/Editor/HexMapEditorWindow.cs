@@ -7,23 +7,24 @@ namespace HexMapTool
 {
     public class HexMapEditorWindow : EditorWindow
     {
-       HexGrid grid;
-
+        static HexGrid grid;
+        private static Object gridScriptableObject;
         [MenuItem("Window/Hex Map Tool")]
         static void Init()
         {
             HexMapEditorWindow window = (HexMapEditorWindow)EditorWindow.GetWindow(typeof(HexMapEditorWindow));
             window.Show();
+            gridScriptableObject = AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Scripts/Editor/HexMap Data.asset", typeof(HexGrid));
+            grid = (HexGrid)gridScriptableObject;
+            grid.Init();
         }
 
         public void OnFocus()
         {
-            if (grid == null) 
-            {
-                grid = CreateInstance<HexGrid>();
-                grid.Init();
-            }
-            
+            //if (grid == null) 
+            //{
+                
+            //}
         }
 
         private void OnGUI()
@@ -31,6 +32,7 @@ namespace HexMapTool
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Hex Map Generator", EditorStyles.boldLabel);
+            gridScriptableObject =  EditorGUILayout.ObjectField(gridScriptableObject, typeof(HexGrid), true);
             if (GUILayout.Button("Generate Map"))
             {
                 Debug.Log("Generating Map");
