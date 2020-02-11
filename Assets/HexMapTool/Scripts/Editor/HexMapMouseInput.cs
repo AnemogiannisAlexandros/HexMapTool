@@ -20,8 +20,6 @@ namespace HexMapTool
                     {
                         if (e.keyCode == KeyCode.A)
                         {
-                            Debug.Log("Input works");
-                            //view = SceneView.lastActiveSceneView;
                             HandleInput();
                         }
                         break;
@@ -37,7 +35,6 @@ namespace HexMapTool
             if (Physics.Raycast(inputRay, out hit))
             {
                 Debug.LogFormat("Touched At : {0} ",hit.point);
-                //TouchCell(hit.point);
             }
 
         }

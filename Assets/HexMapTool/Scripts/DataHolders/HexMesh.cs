@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using Unity.EditorCoroutines.Editor;
+
 
 namespace HexMapTool
 {
@@ -23,14 +27,14 @@ namespace HexMapTool
 			triangles = new List<int>();
 		}
 
-		public void Triangulate(HexCell[] cells)
+		public void Triangulate(Vector3[] coords)
 		{
 			hexMesh.Clear();
 			vertices.Clear();
 			triangles.Clear();
-			for (int i = 0; i < cells.Length; i++)
+			for (int i = 0; i < coords.Length; i++)
 			{
-				Triangulate(cells[i]);
+				Triangulate(coords[i]);
 			}
 			hexMesh.vertices = vertices.ToArray();
 			hexMesh.triangles = triangles.ToArray();
@@ -41,11 +45,10 @@ namespace HexMapTool
             }
         }
 
-		void Triangulate(HexCell cell)
+		void Triangulate(Vector3 centerCoords)
 		{
-
-			Vector3 center = cell.transform.localPosition;
-			for (int i = 0; i < 6; i++)
+            Vector3 center = centerCoords;
+            for (int i = 0; i < 6; i++)
 			{
 				AddTriangle(
 				center,

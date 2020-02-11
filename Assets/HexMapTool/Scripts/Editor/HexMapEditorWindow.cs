@@ -37,12 +37,12 @@ namespace HexMapTool
             grid.OnGui();
             if (GUILayout.Button("Generate Map"))
             {
-                Debug.Log("Generating Map");
+               // Debug.Log("Generating Map");
                 grid.CreateGrid();
             }
             if (GUILayout.Button("Clear Map"))
             {
-                Debug.Log("Deleting Map");
+               // Debug.Log("Deleting Map");
                 grid.DestroyGrid();
             }
             EditorGUILayout.EndVertical();
