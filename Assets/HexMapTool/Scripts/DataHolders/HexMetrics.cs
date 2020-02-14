@@ -10,6 +10,7 @@ namespace HexMapTool
 
     public class HexMetrics : MonoBehaviour
     {
+        //All Mathematical and Geometrical Data of a Hex
         private static float outRadious = 1f;
         private static float sideLength = outRadious;
         private static float perimeter = sideLength * 6;
@@ -27,7 +28,8 @@ namespace HexMapTool
         {
             return inRadius;
         }
-        //all verticies of the Hexagon
+
+        //all verticies of the Hexagon defined by radious(inner and outer)
         public static Vector3[] verts = {
         new Vector3(0f, 0f, outRadious),
         new Vector3(inRadius, 0f, 0.5f * outRadious),

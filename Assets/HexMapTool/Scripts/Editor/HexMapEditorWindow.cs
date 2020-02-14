@@ -5,29 +5,41 @@ using UnityEditor;
 
 namespace HexMapTool
 {
+    /// <summary>
+    /// Main Window of our tool
+    /// Holds the Scriptable object that has our data.
+    /// </summary>
     public class HexMapEditorWindow : EditorWindow
     {
-        static HexGrid grid;
+        private static HexMapEditorWindow _instance;
+
+        public static HexMapEditorWindow Instance { get { return GetWindow<HexMapEditorWindow>(); } }
+        public static HexGrid grid;
         private static GameObject gridObject;
+        void OnEnable()
+        {
+            _instance = this;
+            grid = (HexGrid)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Prefabs/HexMap Data.asset", typeof(HexGrid));
+        }
+
         [MenuItem("Window/Hex Map Tool")]
         static void Init()
         {
             HexMapEditorWindow window = (HexMapEditorWindow)EditorWindow.GetWindow(typeof(HexMapEditorWindow));
-            window.Show();
-            
+            window.Show();          
         }
 
 
         public void OnFocus()
         {
             if (gridObject == null)
-            {
-                grid = (HexGrid)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Prefabs/HexMap Data.asset", typeof(HexGrid));
+            { 
                 //grid = CreateInstance<HexGrid>();
                 gridObject = grid.Init();
             }
         }
 
+        //Editor Window On Gui
         private void OnGUI()
         {
             EditorGUILayout.BeginHorizontal();

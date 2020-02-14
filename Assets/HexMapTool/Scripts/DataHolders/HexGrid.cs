@@ -19,37 +19,62 @@ namespace HexMapTool
         [SerializeField]
         private int height = 1;
         [SerializeField]
-        private GameObject cellPrefab;
+        private Color defaultColor;
         [SerializeField]
-        private GameObject cellLabelPrefab;
-        [SerializeField]
-        private Canvas gridCanvas;
+        private Color touchedColor;
+        //[SerializeField]
+        //private GameObject cellPrefab;
+        //[SerializeField]
+        //private GameObject cellLabelPrefab;
+        //[SerializeField]
+        //private Canvas gridCanvas;
 
-        Canvas canvas;
-        GameObject hexCellHolder;
+        //Canvas canvas;
+        //GameObject hexCellHolder;
         GameObject hexGrid;
         HexCell[] cells;
-         HexMesh hexMesh;
-        public Vector3[] coordinates;
+        HexMesh hexMesh;
+        //public Vector3[] coordinates;
 
+        public HexMesh GetMesh()
+        {
+            return hexMesh;
+        }
+        public HexCell[] GetCells()
+        {
+            return cells;
+        }
+        public Color GetDefaultColor()
+        {
+            return defaultColor;
+        }
+        public Color GetTouchedColor()
+        {
+            return touchedColor;
+        }
+        public int GetWidth()
+        {
+            return width;
+        }
         public GameObject Init() 
         {
             hexGrid = new GameObject("Hex Grid");
             hexMesh = hexGrid.AddComponent<HexMesh>();
             hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat",typeof(Material));
             hexMesh.Init();
-            canvas = Instantiate(gridCanvas,hexGrid.transform);
-            canvas.transform.position += new Vector3(0, 0.1f, 0);
-            hexCellHolder = new GameObject("Hex Cells");
-            hexCellHolder.transform.SetParent(hexGrid.transform);
+           // canvas = Instantiate(gridCanvas,hexGrid.transform);
+           // canvas.transform.position += new Vector3(0, 0.1f, 0);
+           // hexCellHolder = new GameObject("Hex Cells");
+           // hexCellHolder.transform.SetParent(hexGrid.transform);
             return hexGrid;
         }
 
+        //Create Hex Grid with given height and width
         public void CreateGrid()
         {
 
-            //cells = new HexCell[height * width];
-            coordinates = new Vector3[height * width];
+            cells = new HexCell[height * width];
+            //coordinates = new Vector3[height * width];
             int i = 0;
             for (int z = 0; z < height; z++)
             {
@@ -58,7 +83,7 @@ namespace HexMapTool
                     CreateCell(x, z, i++);
                 }
             }
-            hexMesh.Triangulate(coordinates);
+            hexMesh.Triangulate(cells);
 
         }
 
@@ -74,21 +99,28 @@ namespace HexMapTool
             //}
             hexMesh.GetComponent<MeshFilter>().sharedMesh.Clear();
         }
-
+        public void TouchCell(Vector3 position, HexCoordinates coords)
+        {
+            int index = coords.X + coords.Z * width + coords.Z / 2;
+            HexCell cell = cells[index];
+            cell.SetColor(touchedColor);
+            hexMesh.Triangulate(cells);
+        }
         private void CreateCell(int x, int z, int i)
         {
             Vector3 position;
             position.x = (x + z * 0.5f - z / 2) * (HexMetrics.GetInnerRadius()) * 2f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
-            float h = Mathf.PerlinNoise(position.x, position.z);
-            position.y = h;
-            coordinates[i] = position;
+            //float h = Mathf.PerlinNoise(position.x, position.z);
+            position.y = 0;
+            // coordinates[i] = position;
             //GameObject obj = Instantiate(cellPrefab);
-            //HexCell cell = obj.GetComponent<HexCell>();
-            //cells[i] = cell;
+            cells[i] = new HexCell(position, HexCoordinates.FromOffsetCoordinates(x, z), defaultColor);
             //cell.transform.SetParent(hexCellHolder.transform, false);
             //cell.transform.localPosition = position;
+            //cell.SetWorldCoordinates(position);
             //cell.SetCoordinates(HexCoordinates.FromOffsetCoordinates(x, z));
+            //cell.SetColor(defaultColor);
 
 
 
@@ -105,6 +137,9 @@ namespace HexMapTool
         {
             width = EditorGUILayout.IntField(width);
             height = EditorGUILayout.IntField(height);
+            defaultColor = EditorGUILayout.ColorField(defaultColor);
+            touchedColor = EditorGUILayout.ColorField(touchedColor);
         }
+
     }
 }
