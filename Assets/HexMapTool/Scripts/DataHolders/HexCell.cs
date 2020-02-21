@@ -4,6 +4,23 @@ using UnityEngine;
 
 namespace HexMapTool
 {
+    public enum HexDirection
+    {
+        NE,
+        E,
+        SE,
+        SW,
+        W,
+        NW
+    }
+    public static class HexDirectionExtensions
+    {
+
+        public static HexDirection Opposite(this HexDirection direction)
+        {
+            return (int)direction < 3 ? (direction + 3) : (direction - 3);
+        }
+    }
     /// <summary>
     /// What data a "HexCell" must Hold for itself
     /// </summary>
@@ -21,7 +38,8 @@ namespace HexMapTool
             this.coordinates = hexCoords;
             this.cellColor = cellCollor;
         }
-
+        [SerializeField]
+        HexCell[] neighbors = new HexCell[6];
         [SerializeField]
         private Vector3 worldCoordinates;
         [SerializeField]
@@ -29,6 +47,15 @@ namespace HexMapTool
         [SerializeField]
         private Color cellColor;
 
+        public HexCell GetNeighbor(HexDirection direction)
+        {
+            return neighbors[(int)direction];
+        }
+        public void SetNeighbor(HexDirection direction, HexCell cell)
+        {
+            neighbors[(int)direction] = cell;
+            cell.neighbors[(int)direction.Opposite()] = this;
+        }
         public Vector3 GetWorldCoordinates()
         {
             return worldCoordinates;

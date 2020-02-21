@@ -24,18 +24,41 @@ namespace HexMapTool
                     {
                         if (e.keyCode == KeyCode.Space)
                         {
+                           Debug.Log("Working");
                             HandleInput();
                             SceneView.RepaintAll();
                         }
                         break;
                     }
+
+                //case EventType.MouseDrag:
+                //    {
+                //        if (e.keyCode == KeyCode.Mouse0)
+                //        {
+                //            Debug.Log("Working");
+                //            HandleInput();
+                //            SceneView.RepaintAll();
+                //        }
+                //    }
+                //    break;
+                //case EventType.Layout:
+                //    if (e.keyCode == KeyCode.Mouse0)
+                //    {
+                //        Debug.Log("Working");
+                //        HandleInput();
+                //        SceneView.RepaintAll();
+                //    }
+                //    HandleUtility.AddDefaultControl(0);
+
+                   
+                //    break;
             }
         }
 
         void HandleInput()
         {
             Ray inputRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-            Debug.DrawRay(inputRay.origin, inputRay.direction, Color.red, 6);
+            //Debug.DrawRay(inputRay.origin, inputRay.direction, Color.red, 6);
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {

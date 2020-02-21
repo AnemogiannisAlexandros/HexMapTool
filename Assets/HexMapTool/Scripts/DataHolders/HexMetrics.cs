@@ -11,7 +11,7 @@ namespace HexMapTool
     public class HexMetrics : MonoBehaviour
     {
         //All Mathematical and Geometrical Data of a Hex
-        private static float outRadious = 1f;
+        private static float outRadious = 10f;
         private static float sideLength = outRadious;
         private static float perimeter = sideLength * 6;
         private static float apothem = Mathf.Sqrt(Mathf.Pow(outRadious, 2) - Mathf.Pow(sideLength / 2, 2));

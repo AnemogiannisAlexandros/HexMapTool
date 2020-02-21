@@ -32,7 +32,8 @@ namespace HexMapTool
         //Canvas canvas;
         //GameObject hexCellHolder;
         GameObject hexGrid;
-        HexCell[] cells;
+        [SerializeField]
+        private HexCell[] cells;
         HexMesh hexMesh;
         //public Vector3[] coordinates;
 
@@ -106,16 +107,43 @@ namespace HexMapTool
             cell.SetColor(touchedColor);
             hexMesh.Triangulate(cells);
         }
+        private void ExpandTouch(Vector3 position, HexCoordinates coords,int hexExpand)
+        {
+
+        }
         private void CreateCell(int x, int z, int i)
         {
             Vector3 position;
             position.x = (x + z * 0.5f - z / 2) * (HexMetrics.GetInnerRadius()) * 2f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
-            //float h = Mathf.PerlinNoise(position.x, position.z);
-            position.y = 0;
+            float h = Mathf.PerlinNoise(position.x, position.z);
+            position.y = h;
             // coordinates[i] = position;
             //GameObject obj = Instantiate(cellPrefab);
             cells[i] = new HexCell(position, HexCoordinates.FromOffsetCoordinates(x, z), defaultColor);
+            if (x > 0)
+            {
+                cells[i].SetNeighbor(HexDirection.W, cells[i - 1]);
+                if (z > 0)
+                {
+                    if ((z & 1) == 0)
+                    {
+                        cells[i].SetNeighbor(HexDirection.SE, cells[i - width]);
+                        if (x > 0)
+                        {
+                            cells[i].SetNeighbor(HexDirection.SW, cells[i - width - 1]);
+                        }
+                    }
+                }
+                else
+                {
+                    cells[i].SetNeighbor(HexDirection.SW, cells[i - width]);
+                    if (x < width - 1)
+                    {
+                        cells[i].SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+                    }
+                }
+            }
             //cell.transform.SetParent(hexCellHolder.transform, false);
             //cell.transform.localPosition = position;
             //cell.SetWorldCoordinates(position);
