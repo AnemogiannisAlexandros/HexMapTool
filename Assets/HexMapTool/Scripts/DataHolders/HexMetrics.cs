@@ -20,6 +20,21 @@ namespace HexMapTool
         private static float inRadius = apothem;
         private static float longDiagonal = sideLength *2;
 
+
+        public const float solidFactor = 0.75f;
+
+        public const float blendFactor = 1f - solidFactor;
+
+        public static Vector3 GetFirstSolidCorner(HexDirection direction)
+        {
+            return corners[(int)direction] * solidFactor;
+        }
+
+        public static Vector3 GetSecondSolidCorner(HexDirection direction)
+        {
+            return corners[(int)direction + 1] * solidFactor;
+        }
+
         public static float GetOutterRadius()
         {
             return outRadious;
@@ -28,9 +43,18 @@ namespace HexMapTool
         {
             return inRadius;
         }
+        public static Vector3 GetFirstCorner(HexDirection direction)
+        {
+            return corners[(int)direction];
+        }
 
+        public static Vector3 GetSecondCorner(HexDirection direction)
+        {
+            return corners[(int)direction + 1];
+        }
         //all verticies of the Hexagon defined by radious(inner and outer)
-        public static Vector3[] verts = {
+        public static Vector3[] verts =
+        {
         new Vector3(0f, 0f, outRadious),
         new Vector3(inRadius, 0f, 0.5f * outRadious),
         new Vector3(inRadius, 0f, -0.5f * outRadious),
@@ -38,6 +62,18 @@ namespace HexMapTool
         new Vector3(-inRadius, 0f, -0.5f * outRadious),
         new Vector3(-inRadius, 0f, 0.5f * outRadious),
         new Vector3(0f, 0f, outRadious)
-    };
+
+        };
+        //All Verticies of the Hexagon defined by radious(inner and outer)
+        static Vector3[] corners = 
+        {
+        new Vector3(0f, 0f, outRadious),
+        new Vector3(inRadius, 0f, 0.5f * outRadious),
+        new Vector3(inRadius, 0f, -0.5f * outRadious),
+        new Vector3(0f, 0f, -outRadious),
+        new Vector3(-inRadius, 0f, -0.5f * outRadious),
+        new Vector3(-inRadius, 0f, 0.5f * outRadious),
+        new Vector3(0f, 0f, outRadious)
+        };
     }
 }

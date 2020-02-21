@@ -22,6 +22,7 @@ namespace HexMapTool
 {
     //Will Hold HexMesh Coordinate in the Hex Coordinate System
     //More Can be found at https://www.redblobgames.com/grids/hexagons/
+
     [System.Serializable]
     public struct HexCoordinates
     {

@@ -26,11 +26,9 @@ namespace HexMapTool
                         {
                            Debug.Log("Working");
                             HandleInput();
-                            SceneView.RepaintAll();
                         }
                         break;
                     }
-
                 //case EventType.MouseDrag:
                 //    {
                 //        if (e.keyCode == KeyCode.Mouse0)
@@ -54,7 +52,6 @@ namespace HexMapTool
                 //    break;
             }
         }
-
         void HandleInput()
         {
             Ray inputRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
@@ -62,7 +59,7 @@ namespace HexMapTool
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-                Debug.Log("touched at Vector3 : " + hit.point);
+               // Debug.Log("touched at Vector3 : " + hit.point);
                 HexCoordinates coordinates = HexCoordinates.FromPosition(hit.point);
                 Debug.Log("touched at HexCoordinates " + coordinates.ToString());
                 HexGrid grid =  HexMapEditorWindow.grid;

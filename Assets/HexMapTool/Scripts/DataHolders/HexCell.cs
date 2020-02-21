@@ -20,12 +20,25 @@ namespace HexMapTool
         {
             return (int)direction < 3 ? (direction + 3) : (direction - 3);
         }
+        public static HexDirection Previous(this HexDirection direction)
+        {
+            return direction == HexDirection.NE ? HexDirection.NW : (direction - 1);
+        }
+
+        public static HexDirection Next(this HexDirection direction)
+        {
+            return direction == HexDirection.NW ? HexDirection.NE : (direction + 1);
+        }
     }
     /// <summary>
     /// What data a "HexCell" must Hold for itself
     /// </summary>
     public class HexCell
     {
+        HexCell[] neighbors;
+        private Vector3 worldCoordinates;
+        private HexCoordinates coordinates;
+        private Color cellColor;
         //Constructor
         public HexCell()
         {
@@ -37,16 +50,13 @@ namespace HexMapTool
             this.worldCoordinates = worldCoords;
             this.coordinates = hexCoords;
             this.cellColor = cellCollor;
+            this.neighbors = new HexCell[6];
         }
-        [SerializeField]
-        HexCell[] neighbors = new HexCell[6];
-        [SerializeField]
-        private Vector3 worldCoordinates;
-        [SerializeField]
-        private HexCoordinates coordinates;
-        [SerializeField]
-        private Color cellColor;
 
+        public HexCell[] getNeighbors()
+        {
+            return neighbors;
+        }
         public HexCell GetNeighbor(HexDirection direction)
         {
             return neighbors[(int)direction];

@@ -21,7 +21,13 @@ namespace HexMapTool
         [SerializeField]
         private Color defaultColor;
         [SerializeField]
+        private Color highlightColor;
+        [SerializeField]
         private Color touchedColor;
+        [SerializeField]
+        private HexCell[] cells;
+        private HexCell currentCell;
+        private HexCell previousCell;
         //[SerializeField]
         //private GameObject cellPrefab;
         //[SerializeField]
@@ -32,8 +38,7 @@ namespace HexMapTool
         //Canvas canvas;
         //GameObject hexCellHolder;
         GameObject hexGrid;
-        [SerializeField]
-        private HexCell[] cells;
+
         HexMesh hexMesh;
         //public Vector3[] coordinates;
 
@@ -99,6 +104,7 @@ namespace HexMapTool
             //    DestroyImmediate(hexCellHolder.transform.GetChild(i).gameObject);
             //}
             hexMesh.GetComponent<MeshFilter>().sharedMesh.Clear();
+            cells = new HexCell[0];
         }
         public void TouchCell(Vector3 position, HexCoordinates coords)
         {
@@ -107,6 +113,7 @@ namespace HexMapTool
             cell.SetColor(touchedColor);
             hexMesh.Triangulate(cells);
         }
+       
         private void ExpandTouch(Vector3 position, HexCoordinates coords,int hexExpand)
         {
 
@@ -116,34 +123,47 @@ namespace HexMapTool
             Vector3 position;
             position.x = (x + z * 0.5f - z / 2) * (HexMetrics.GetInnerRadius()) * 2f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
-            float h = Mathf.PerlinNoise(position.x, position.z);
-            position.y = h;
+            //float h = Mathf.PerlinNoise(position.x, position.z);
+            position.y = 0;
             // coordinates[i] = position;
             //GameObject obj = Instantiate(cellPrefab);
-            cells[i] = new HexCell(position, HexCoordinates.FromOffsetCoordinates(x, z), defaultColor);
+            HexCell cell = new HexCell(position, HexCoordinates.FromOffsetCoordinates(x, z), defaultColor);
+
+            //Avoid Setting Neighbor on the first leftmost HexCell
             if (x > 0)
             {
-                cells[i].SetNeighbor(HexDirection.W, cells[i - 1]);
-                if (z > 0)
+                cell.SetNeighbor(HexDirection.W, cells[i - 1]);
+            }
+            if (z > 0)
+            {
+                if ((z & 1) == 0)
                 {
-                    if ((z & 1) == 0)
+                    cell.SetNeighbor(HexDirection.SE, cells[i - width]);
+                    if (x > 0)
                     {
-                        cells[i].SetNeighbor(HexDirection.SE, cells[i - width]);
-                        if (x > 0)
-                        {
-                            cells[i].SetNeighbor(HexDirection.SW, cells[i - width - 1]);
-                        }
+                        cell.SetNeighbor(HexDirection.SW, cells[i - width - 1]);
                     }
                 }
                 else
                 {
-                    cells[i].SetNeighbor(HexDirection.SW, cells[i - width]);
+                    cell.SetNeighbor(HexDirection.SW, cells[i - width]);
                     if (x < width - 1)
                     {
-                        cells[i].SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+                        cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
                     }
                 }
             }
+
+            //Color Debug for how many neighbors each hex Has.
+            //LighterColor stands for more Neighbors. 0.15*6 = 0.9 should be our Max value
+            //foreach (HexCell c in cell.getNeighbors())
+            //{
+            //    if (c != null)
+            //    {
+            //        cell.SetColor(cell.GetCellColor() + new Color(0.15f,0.15f,0.15f));
+            //    }
+            //}
+            cells[i] = cell;
             //cell.transform.SetParent(hexCellHolder.transform, false);
             //cell.transform.localPosition = position;
             //cell.SetWorldCoordinates(position);
@@ -166,7 +186,9 @@ namespace HexMapTool
             width = EditorGUILayout.IntField(width);
             height = EditorGUILayout.IntField(height);
             defaultColor = EditorGUILayout.ColorField(defaultColor);
+            highlightColor = EditorGUILayout.ColorField(highlightColor);
             touchedColor = EditorGUILayout.ColorField(touchedColor);
+            //EditorUtility.SetDirty(this);
         }
 
     }
