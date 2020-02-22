@@ -39,6 +39,8 @@ namespace HexMapTool
         private Vector3 worldCoordinates;
         private HexCoordinates coordinates;
         private Color cellColor;
+        private int elevation;
+         
         //Constructor
         public HexCell()
         {

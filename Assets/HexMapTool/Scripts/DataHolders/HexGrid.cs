@@ -78,7 +78,6 @@ namespace HexMapTool
         //Create Hex Grid with given height and width
         public void CreateGrid()
         {
-
             cells = new HexCell[height * width];
             //coordinates = new Vector3[height * width];
             int i = 0;
@@ -123,8 +122,8 @@ namespace HexMapTool
             Vector3 position;
             position.x = (x + z * 0.5f - z / 2) * (HexMetrics.GetInnerRadius()) * 2f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
-            //float h = Mathf.PerlinNoise(position.x, position.z);
-            position.y = 0;
+            float h = Mathf.PerlinNoise(position.x*5, position.z*5);
+            position.y = h;
             // coordinates[i] = position;
             //GameObject obj = Instantiate(cellPrefab);
             HexCell cell = new HexCell(position, HexCoordinates.FromOffsetCoordinates(x, z), defaultColor);

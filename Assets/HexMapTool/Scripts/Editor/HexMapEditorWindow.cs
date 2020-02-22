@@ -33,7 +33,7 @@ namespace HexMapTool
         public void OnFocus()
         {
             if (gridObject == null)
-            { 
+            {
                 //grid = CreateInstance<HexGrid>();
                 gridObject = grid.Init();
             }
