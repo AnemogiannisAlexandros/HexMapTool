@@ -7,7 +7,10 @@ using UnityEngine;
 /// </summary>
 namespace HexMapTool
 {
-
+    public enum HexEdgeType
+    {
+        Flat, Slope, Cliff
+    }
     public class HexMetrics : MonoBehaviour
     {
         //All Mathematical and Geometrical Data of a Hex
@@ -25,6 +28,44 @@ namespace HexMapTool
         public const float solidFactor = 0.75f;
 
         public const float blendFactor = 1f - solidFactor;
+
+        public const float verticalTerraceStepSize = 1f / (terracesPerSlope + 1);
+
+        public const int terracesPerSlope = 2;
+
+        public const int terraceSteps = terracesPerSlope * 2 + 1;
+
+        public const float horizontalTerraceStepSize = 1f / terraceSteps;
+
+        public static HexEdgeType GetEdgeType(int elevation1, int elevation2)
+        {
+            if (elevation1 == elevation2)
+            {
+                return HexEdgeType.Flat;
+            }
+            int delta = elevation2 - elevation1;
+            if (delta == 1 || delta == -1)
+            {
+                return HexEdgeType.Slope;
+            }
+            return HexEdgeType.Cliff;
+        }
+
+        public static Vector3 TerraceLerp(Vector3 a, Vector3 b, int step)
+        {
+            float h = step * HexMetrics.horizontalTerraceStepSize;
+            a.x += (b.x - a.x) * h;
+            a.z += (b.z - a.z) * h;
+            float v = ((step + 1) / 2) * HexMetrics.verticalTerraceStepSize;
+            a.y += (b.y - a.y) * v;
+            return a;
+        }
+
+        public static Color TerraceLerp(Color a, Color b, int step)
+        {
+            float h = step * HexMetrics.horizontalTerraceStepSize;
+            return Color.Lerp(a, b, h);
+        }
 
         public static Vector3 GetBridge(HexDirection direction)
         {

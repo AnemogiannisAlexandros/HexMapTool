@@ -55,6 +55,31 @@ namespace HexMapTool
             this.neighbors = new HexCell[6];
         }
 
+        public HexEdgeType GetEdgeType(HexDirection direction)
+        {
+            return HexMetrics.GetEdgeType(
+                elevation, neighbors[(int)direction].elevation
+            );
+        }
+
+        public HexEdgeType GetEdgeType(HexCell otherCell)
+        {
+            return HexMetrics.GetEdgeType(
+                elevation, otherCell.elevation
+            );
+        }
+
+        public float GetElevation() 
+        {
+            return elevation;
+        }
+        public void SetElevation(int elevation) 
+        {
+            this.elevation = elevation;
+            Vector3 position = GetWorldCoordinates();
+            position.y = elevation * HexMetrics.elevationStep;
+            SetWorldCoordinates(position);
+        }
         public HexCell[] getNeighbors()
         {
             return neighbors;

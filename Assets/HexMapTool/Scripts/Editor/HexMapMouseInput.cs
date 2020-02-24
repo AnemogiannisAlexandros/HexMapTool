@@ -63,7 +63,8 @@ namespace HexMapTool
                 HexCoordinates coordinates = HexCoordinates.FromPosition(hit.point);
                 Debug.Log("touched at HexCoordinates " + coordinates.ToString());
                 HexGrid grid =  HexMapEditorWindow.grid;
-                grid.TouchCell(hit.point,coordinates);
+                grid.EditCell(grid.GetCell(hit.point,coordinates));
+                //grid.TouchCell(hit.point,coordinates);
             }
         }
     }

@@ -19,6 +19,8 @@ namespace HexMapTool
         [SerializeField]
         private int height = 1;
         [SerializeField]
+        private int activeElevation = 0;
+        [SerializeField]
         private Color defaultColor;
         [SerializeField]
         private Color highlightColor;
@@ -28,6 +30,7 @@ namespace HexMapTool
         private HexCell[] cells;
         private HexCell currentCell;
         private HexCell previousCell;
+
         //[SerializeField]
         //private GameObject cellPrefab;
         //[SerializeField]
@@ -112,18 +115,28 @@ namespace HexMapTool
             cell.SetColor(touchedColor);
             hexMesh.Triangulate(cells);
         }
-       
-        private void ExpandTouch(Vector3 position, HexCoordinates coords,int hexExpand)
+        public void Refresh() 
         {
-
+            hexMesh.Triangulate(cells);
+        }
+        public HexCell GetCell(Vector3 position, HexCoordinates coords) 
+        {
+            int index = coords.X + coords.Z * width + coords.Z / 2;
+            return cells[index];
+        }
+        public void EditCell(HexCell cell) 
+        {
+            cell.SetColor(touchedColor);
+            cell.SetElevation(activeElevation);
+            Refresh();
         }
         private void CreateCell(int x, int z, int i)
         {
             Vector3 position;
             position.x = (x + z * 0.5f - z / 2) * (HexMetrics.GetInnerRadius()) * 2f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
-            float h = Mathf.PerlinNoise(position.x*5, position.z*5);
-            position.y = h;
+           // float h = Mathf.PerlinNoise(position.x*5, position.z*5);
+            position.y = 0;
             // coordinates[i] = position;
             //GameObject obj = Instantiate(cellPrefab);
             HexCell cell = new HexCell(position, HexCoordinates.FromOffsetCoordinates(x, z), defaultColor);
@@ -184,6 +197,7 @@ namespace HexMapTool
         {
             width = EditorGUILayout.IntField(width);
             height = EditorGUILayout.IntField(height);
+            activeElevation = EditorGUILayout.IntField(activeElevation);
             defaultColor = EditorGUILayout.ColorField(defaultColor);
             highlightColor = EditorGUILayout.ColorField(highlightColor);
             touchedColor = EditorGUILayout.ColorField(touchedColor);
