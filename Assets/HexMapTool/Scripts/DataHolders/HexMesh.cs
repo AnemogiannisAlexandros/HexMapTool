@@ -24,7 +24,7 @@ namespace HexMapTool
 		public void Init()
 		{
             hexMesh = new Mesh();
-            GetComponent<MeshFilter>().mesh = hexMesh;
+            GetComponent<MeshFilter>().sharedMesh = hexMesh;
             //hexMesh.name = "Hex Mesh";
             vertices = new List<Vector3>();
 			triangles = new List<int>();
@@ -37,7 +37,6 @@ namespace HexMapTool
 		public void Triangulate(HexCell[] coords)
 		{
             hexMesh.Clear();
-
             vertices.Clear();
 			triangles.Clear();
             colors.Clear();
@@ -48,13 +47,14 @@ namespace HexMapTool
                 hexMesh.vertices = vertices.ToArray();
                 hexMesh.triangles = triangles.ToArray();
                 hexMesh.colors = colors.ToArray();
-                //Debug.Log(hexMesh.vertices.Length);
-                // hexMesh.RecalculateBounds();
-                //hexMesh.RecalculateNormals();
-                if (meshCollider == null)
-                {
-                    meshCollider = gameObject.AddComponent<MeshCollider>();
-                }			
+            //Debug.Log(hexMesh.vertices.Length);
+            // hexMesh.RecalculateBounds();
+            //hexMesh.RecalculateNormals();
+            if (meshCollider == null)
+            {
+                meshCollider = gameObject.AddComponent<MeshCollider>();
+            }
+            meshCollider.sharedMesh = hexMesh;
         }
 
         void Triangulate(HexCell cell)

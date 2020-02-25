@@ -15,7 +15,7 @@ namespace HexMapTool
 
         public static HexMapEditorWindow Instance { get { return GetWindow<HexMapEditorWindow>(); } }
         public static HexGrid grid;
-        private static GameObject gridObject;
+        private GameObject gridObject;
         void OnEnable()
         {
             _instance = this;
@@ -30,14 +30,13 @@ namespace HexMapTool
         }
 
 
-        public void OnFocus()
-        {
-            if (gridObject == null)
-            {
-                //grid = CreateInstance<HexGrid>();
-                gridObject = grid.Init();
-            }
-        }
+        //public void OnFocus()
+        //{
+        //    if (gridObject == null)
+        //    {
+        //        //grid = CreateInstance<HexGrid>();
+        //    }
+        //}
 
         //Editor Window On Gui
         private void OnGUI()
@@ -49,7 +48,9 @@ namespace HexMapTool
             grid.OnGui();
             if (GUILayout.Button("Generate Map"))
             {
-               // Debug.Log("Generating Map");
+                gridObject = grid.Init();
+
+                // Debug.Log("Generating Map");
                 grid.CreateGrid();
             }
             if (GUILayout.Button("Clear Map"))

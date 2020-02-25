@@ -40,7 +40,7 @@ namespace HexMapTool
 
         //Canvas canvas;
         //GameObject hexCellHolder;
-        GameObject hexGrid;
+        private GameObject hexGrid;
 
         HexMesh hexMesh;
         //public Vector3[] coordinates;
@@ -67,20 +67,24 @@ namespace HexMapTool
         }
         public GameObject Init() 
         {
-            hexGrid = new GameObject("Hex Grid");
-            hexMesh = hexGrid.AddComponent<HexMesh>();
-            hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat",typeof(Material));
-            hexMesh.Init();
-           // canvas = Instantiate(gridCanvas,hexGrid.transform);
-           // canvas.transform.position += new Vector3(0, 0.1f, 0);
-           // hexCellHolder = new GameObject("Hex Cells");
-           // hexCellHolder.transform.SetParent(hexGrid.transform);
+            if (hexGrid == null)
+            {
+                hexGrid = new GameObject("Hex Grid");
+                hexMesh = hexGrid.AddComponent<HexMesh>();
+                hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
+                // canvas = Instantiate(gridCanvas,hexGrid.transform);
+                // canvas.transform.position += new Vector3(0, 0.1f, 0);
+                // hexCellHolder = new GameObject("Hex Cells");
+                // hexCellHolder.transform.SetParent(hexGrid.transform);
+                
+            }
             return hexGrid;
         }
 
         //Create Hex Grid with given height and width
         public void CreateGrid()
         {
+            hexMesh.Init();
             cells = new HexCell[height * width];
             //coordinates = new Vector3[height * width];
             int i = 0;
@@ -106,6 +110,7 @@ namespace HexMapTool
             //    DestroyImmediate(hexCellHolder.transform.GetChild(i).gameObject);
             //}
             hexMesh.GetComponent<MeshFilter>().sharedMesh.Clear();
+            hexMesh.GetComponent<MeshCollider>().sharedMesh.Clear();
             cells = new HexCell[0];
         }
         public void TouchCell(Vector3 position, HexCoordinates coords)
