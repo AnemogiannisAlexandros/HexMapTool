@@ -11,7 +11,6 @@ namespace HexMapTool
     /// Our Hex Grid
     /// </summary>
     
-        [CreateAssetMenu(fileName = "HexMap Data",menuName = "Hexmap/Data")]
     public class HexGrid : ScriptableObject
     {
         [SerializeField]
@@ -22,8 +21,6 @@ namespace HexMapTool
         private int activeElevation = 0;
         [SerializeField]
         private Color defaultColor;
-        [SerializeField]
-        private Color highlightColor;
         [SerializeField]
         private Color touchedColor;
         [SerializeField]
@@ -57,6 +54,10 @@ namespace HexMapTool
         {
             return defaultColor;
         }
+        public void SetTouchedColor(Color color)
+        {
+            touchedColor = color;
+        }
         public Color GetTouchedColor()
         {
             return touchedColor;
@@ -72,11 +73,11 @@ namespace HexMapTool
                 hexGrid = new GameObject("Hex Grid");
                 hexMesh = hexGrid.AddComponent<HexMesh>();
                 hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
+                defaultColor = Color.white;
                 // canvas = Instantiate(gridCanvas,hexGrid.transform);
                 // canvas.transform.position += new Vector3(0, 0.1f, 0);
                 // hexCellHolder = new GameObject("Hex Cells");
                 // hexCellHolder.transform.SetParent(hexGrid.transform);
-                
             }
             return hexGrid;
         }
@@ -198,14 +199,13 @@ namespace HexMapTool
 
 
         }
+       
         public void OnGui()
         {
             width = EditorGUILayout.IntField(width);
             height = EditorGUILayout.IntField(height);
             activeElevation = EditorGUILayout.IntField(activeElevation);
-            defaultColor = EditorGUILayout.ColorField(defaultColor);
-            highlightColor = EditorGUILayout.ColorField(highlightColor);
-            touchedColor = EditorGUILayout.ColorField(touchedColor);
+            
             //EditorUtility.SetDirty(this);
         }
 

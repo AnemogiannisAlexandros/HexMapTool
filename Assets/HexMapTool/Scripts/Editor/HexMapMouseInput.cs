@@ -62,7 +62,7 @@ namespace HexMapTool
                // Debug.Log("touched at Vector3 : " + hit.point);
                 HexCoordinates coordinates = HexCoordinates.FromPosition(hit.point);
                 Debug.Log("touched at HexCoordinates " + coordinates.ToString());
-                HexGrid grid =  HexMapEditorWindow.grid;
+                HexGrid grid =  HexMapEditorWindow.GridInstance;
                 grid.EditCell(grid.GetCell(hit.point,coordinates));
                 //grid.TouchCell(hit.point,coordinates);
             }
