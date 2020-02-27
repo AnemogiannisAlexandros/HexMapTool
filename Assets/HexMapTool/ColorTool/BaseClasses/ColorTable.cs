@@ -16,6 +16,7 @@ namespace HexMapTool
 
         public ColorTable() 
         {
+            Init();
             chosenColors.Add(new ColorArchetype());
         } 
 
@@ -80,13 +81,12 @@ namespace HexMapTool
         }
 
         private SerializedObject colorProperty;
-        private bool isHidden;
+        private bool show;
         SerializedProperty archetypeList;
         private ReorderableList reorderableList;
         SerializedObject so;
         public void Init()
         {
-
             so = new SerializedObject(target);
             
 
@@ -132,6 +132,7 @@ namespace HexMapTool
                     Color.colorValue = new Color(1, 1, 1, 1);
                     Behaviour = null;
                     Data = null;
+                    show = false;
                 }
 
             };
@@ -142,12 +143,10 @@ namespace HexMapTool
             so.Update();
             colorProperty = new SerializedObject(ToolData.Instance.Grid);
             SerializedProperty property = colorProperty.FindProperty("touchedColor");
-            isHidden = EditorGUILayout.BeginToggleGroup("Color List", isHidden);
-            if (isHidden)
+            show = EditorGUILayout.Foldout(show, "Color Card Collection");
+            if (show)
             {
-                EditorGUILayout.LabelField("YOYOYO");
                 reorderableList.DoLayoutList();
-                EditorGUILayout.EndToggleGroup();
             }
             so.ApplyModifiedProperties();
         }

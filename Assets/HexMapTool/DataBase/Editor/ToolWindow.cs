@@ -14,18 +14,30 @@ namespace HexMapTool
             //window.titleContent = new GUIContent("Hex Tool","Hey!");
             window.Show();
         }
+        //Initialize ToolData
         public void OnEnable()
         {
 
-            Debug.Log("First Time");
+            //Debug.Log("First Time");
             myToolData = CreateInstance<ToolData>();
             myToolData.Init();
         }
+        //Tool OnGui
         public void OnGUI()
         {
             myToolData.OnGui();
+            GuiLine();
             myToolData.Grid.OnGui();
+            GuiLine();
             myToolData.Table.OnGui();
+            GuiLine();
+        }
+        //Single Line Separator
+        public void GuiLine(int i_height = 2)
+        {
+            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
+            rect.height = i_height;
+            EditorGUI.DrawRect(rect, new Color(.65f, .65f, .65f, 1));
         }
     }
 }

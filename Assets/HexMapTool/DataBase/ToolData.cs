@@ -17,25 +17,38 @@ namespace HexMapTool
         public static ToolData Instance { get { return m_toolData; } }
         string json;
 
+        private bool show;
 
         public HexGrid Grid;
         public ColorTable Table;
         string destination;
+
+        //Tool Gui. Implements the Gui of HexGrid And Color Table
         public void OnGui() 
         {
-            if (GUILayout.Button("Save"))
+            show = EditorGUILayout.Foldout(show, "Tool Functions", true);
+            if (show)
             {
-                Save(Grid);
-                Save(Table);
-            }
-            if(GUILayout.Button("Load")) 
-            {
-                Load(Grid);
-                Load(Table);
-            }
+                if (GUILayout.Button("Save"))
+                {
+                    Save(Grid);
+                    Save(Table);
+                }
+                if (GUILayout.Button("Load"))
+                {
+                    Load(Grid);
+                    Load(Table);
+                }
+                if (GUILayout.Button("Clear"))
+                {
+                    Clear();
+                }
+            }        
         }
+        //Tool Initialization. Creates appropriate folders and files the first time it runs, and loads if the paths and objects already exist
         public void Init()
         {
+
             if (m_toolData == null)
             {
                 m_toolData = this;
@@ -44,11 +57,32 @@ namespace HexMapTool
             {
                 DestroyImmediate(this);
             }
-            Grid = CreateInstance<HexGrid>();
+            destination = "Assets/HexMapTool/DataBase";
+            if (AssetDatabase.IsValidFolder(destination))
+            {
+                if (AssetDatabase.LoadAssetAtPath(destination + "/GridData.asset", typeof(HexGrid)) != null)
+                {
+                    Grid = (HexGrid)AssetDatabase.LoadAssetAtPath(destination + "/GridData.asset", typeof(HexGrid));
+                    Table = (ColorTable)AssetDatabase.LoadAssetAtPath(destination + "/TableData.asset", typeof(ColorTable));
+                }
+                else
+                {
+                    Grid = CreateInstance<HexGrid>();
+                    Table = CreateInstance<ColorTable>();
+                    AssetDatabase.CreateAsset(Grid, destination + "/GridData.asset");
+                    AssetDatabase.CreateAsset(Table, destination + "/TableData.asset");
+                }
+            }
+            else
+            {
+                AssetDatabase.CreateFolder("HexMapTool", "Database");
+                AssetDatabase.CreateAsset(Grid, destination + "/GridData.asset");
+                AssetDatabase.CreateAsset(Table, destination + "/TableData.asset");
+            }
             Grid.Init();
-            Table = CreateInstance<ColorTable>();
             Table.Init();
         }
+        //Saves Data of type ScriptableObject from  a file created at  Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
         public void Save(ScriptableObject serializeable)
         {
             json = JsonUtility.ToJson(serializeable);
@@ -69,6 +103,7 @@ namespace HexMapTool
             bf.Serialize(file, data);
             file.Close();
         }
+        //Loads Data of type ScriptableObject from  a file created at  Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
         public void Load(ScriptableObject serializeable) 
         {
             FileStream file;
@@ -89,6 +124,12 @@ namespace HexMapTool
             json = data;
             Debug.Log(json);
             JsonUtility.FromJsonOverwrite(json, serializeable);    
+        }
+        //Calls the appropriate methods on each Scriptable object to clear its current data and return to the default state.
+        public void Clear()
+        {
+            Grid.RestoreDefaults();
+            Table.GetTable().Clear();
         }
     }
 
