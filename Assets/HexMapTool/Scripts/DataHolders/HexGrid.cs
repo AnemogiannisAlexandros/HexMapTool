@@ -28,6 +28,14 @@ namespace HexMapTool
         private HexCell currentCell;
         private HexCell previousCell;
 
+        public HexGrid() 
+        {
+            width = 5;
+            height = 5;
+            activeElevation = 1;
+            defaultColor = Color.white;
+        }
+
         //[SerializeField]
         //private GameObject cellPrefab;
         //[SerializeField]
@@ -78,7 +86,9 @@ namespace HexMapTool
                 // canvas.transform.position += new Vector3(0, 0.1f, 0);
                 // hexCellHolder = new GameObject("Hex Cells");
                 // hexCellHolder.transform.SetParent(hexGrid.transform);
+                texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/ColorTool/ColorBackground.jpg", typeof(Texture2D));
             }
+            cardNames = new List<string>();
             return hexGrid;
         }
 
@@ -199,13 +209,54 @@ namespace HexMapTool
 
 
         }
-       
+        
+        public static int selectionIndex = 0;
+        private static List<string> cardNames;
+        private static bool hidden = true;
+        private Texture2D texture;
         public void OnGui()
         {
             width = EditorGUILayout.IntField(width);
             height = EditorGUILayout.IntField(height);
             activeElevation = EditorGUILayout.IntField(activeElevation);
-            
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.LabelField("Hex Map Generator", EditorStyles.boldLabel);
+            //grid = (HexGrid)EditorGUILayout.ObjectField(grid, typeof(HexGrid), true);
+            hidden = ToolData.Instance.Table.GetTable().Count > 0 ? false : true;
+            if (!hidden)
+            {
+                cardNames.Clear();
+                foreach (ColorArchetype c in ToolData.Instance.Table.GetTable())
+                {
+                    cardNames.Add(c.GetArchetypeName());
+                }
+                selectionIndex = EditorGUILayout.Popup(selectionIndex, cardNames.ToArray());
+                Color[] colors = texture.GetPixels();
+                for (int x = 0; x < colors.Length; x++)
+                {
+                    colors[x] = ToolData.Instance.Table.GetTable()[selectionIndex].GetArchetypeColor();
+                }
+                texture.SetPixels(colors);
+                texture.Apply();
+                GUILayout.Label(texture);
+                touchedColor = ToolData.Instance.Table.GetTable()[selectionIndex].GetArchetypeColor();
+                Debug.Log(touchedColor);
+            }
+            if (GUILayout.Button("Generate Map"))
+            {
+                Init();
+
+                // Debug.Log("Generating Map");
+                CreateGrid();
+            }
+            if (GUILayout.Button("Clear Map"))
+            {
+                // Debug.Log("Deleting Map");
+                DestroyGrid();
+            }
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
             //EditorUtility.SetDirty(this);
         }
 

@@ -14,6 +14,11 @@ namespace HexMapTool
         private List<ColorArchetype> chosenColors = new List<ColorArchetype>();
         ColorArchetypeCustomEditor editor;
 
+        public ColorTable() 
+        {
+            chosenColors.Add(new ColorArchetype());
+        } 
+
         public void Init()
         {
             editor = new ColorArchetypeCustomEditor(this);
@@ -53,15 +58,6 @@ namespace HexMapTool
         public void OnGui()
         {
             editor.OnGui();
-            //ScriptableObject target = this;
-            //SerializedObject so = new SerializedObject(target);
-            //SerializedProperty colorsPoperty = so.FindProperty("chosenColors");
-            //EditorGUILayout.PropertyField(colorsPoperty,true);
-            //////if (GUILayout.Button("Add Color"))
-            //////{
-            //////    AddColor();
-            //////}
-            ////so.ApplyModifiedProperties();
         }
     }
     public interface IColorTable
@@ -83,13 +79,16 @@ namespace HexMapTool
             Init();
         }
 
+        private SerializedObject colorProperty;
+        private bool isHidden;
+        SerializedProperty archetypeList;
         private ReorderableList reorderableList;
         SerializedObject so;
         public void Init()
         {
 
             so = new SerializedObject(target);
-            SerializedProperty archetypeList;
+            
 
             archetypeList = so.FindProperty("chosenColors");
 
@@ -141,7 +140,15 @@ namespace HexMapTool
         public void OnGui()
         {
             so.Update();
-            reorderableList.DoLayoutList();
+            colorProperty = new SerializedObject(ToolData.Instance.Grid);
+            SerializedProperty property = colorProperty.FindProperty("touchedColor");
+            isHidden = EditorGUILayout.BeginToggleGroup("Color List", isHidden);
+            if (isHidden)
+            {
+                EditorGUILayout.LabelField("YOYOYO");
+                reorderableList.DoLayoutList();
+                EditorGUILayout.EndToggleGroup();
+            }
             so.ApplyModifiedProperties();
         }
     }
