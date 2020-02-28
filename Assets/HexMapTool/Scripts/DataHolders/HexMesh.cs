@@ -13,19 +13,15 @@ namespace HexMapTool
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 	public class HexMesh : MonoBehaviour
 	{
-        [SerializeField]
         private Mesh hexMesh;
-        [SerializeField]
         private List<Vector3> vertices;
-        [SerializeField]
         private List<int> triangles;
-        [SerializeField]
         private List<Color> colors;
-        [SerializeField]
         private MeshCollider meshCollider;
 
+        private MeshData meshData;
         //Create a mesh
-		public void Init()
+        public void Init()
 		{
             hexMesh = new Mesh();
             GetComponent<MeshFilter>().sharedMesh = hexMesh;
@@ -33,9 +29,15 @@ namespace HexMapTool
             vertices = new List<Vector3>();
 			triangles = new List<int>();
             colors =  new List<Color>();
+            meshData = new MeshData();
+        }
+        public MeshData GetMeshData()
+        {
+            return meshData;
         }
         public void ClearMesh() 
         {
+            meshData.Clear();
             hexMesh.Clear();
             vertices.Clear();
             triangles.Clear();
@@ -51,13 +53,18 @@ namespace HexMapTool
 		public void Triangulate(HexCell[] coords)
 		{
             ClearMesh();
-            for (int i = 0; i < coords.Length; i++)
-			{
-				Triangulate(coords[i]);
-			}
-                hexMesh.vertices = vertices.ToArray();
-                hexMesh.triangles = triangles.ToArray();
-                hexMesh.colors = colors.ToArray();
+            if (coords != null)
+            {
+
+                for (int i = 0; i < coords.Length; i++)
+                {
+                    Triangulate(coords[i]);
+                }
+            }
+            meshData.UpdateMesh(vertices, triangles, colors);
+            hexMesh.vertices = meshData.GetVertices().ToArray();
+            hexMesh.triangles = meshData.GetTriangles().ToArray();
+            hexMesh.colors = meshData.GetColors().ToArray();
             //Debug.Log(hexMesh.vertices.Length);
             // hexMesh.RecalculateBounds();
             //hexMesh.RecalculateNormals();

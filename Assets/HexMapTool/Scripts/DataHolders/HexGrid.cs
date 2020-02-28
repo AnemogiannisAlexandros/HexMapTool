@@ -182,6 +182,7 @@ namespace HexMapTool
         private static bool exists = false;
         private static bool show = false;
         private Texture2D texture;
+        private string MeshName;
 
         //Internal Implementation of EdiotrWinodw onGUI.
         public void OnGui()
@@ -236,6 +237,12 @@ namespace HexMapTool
                     // Debug.Log("Generating Map");
                     CreateGrid();
                 }
+                if (GUILayout.Button("Save map"))
+                {
+                    hexMesh.GetMeshData().SaveMeshData(MeshName);
+                }
+                GUILayout.Label("Mesh File Name",EditorStyles.boldLabel);
+                MeshName = GUILayout.TextField(MeshName);
                 if (GUILayout.Button("Clear Map"))
                 {
                     // Debug.Log("Deleting Map");

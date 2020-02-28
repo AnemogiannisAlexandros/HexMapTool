@@ -6,6 +6,7 @@ namespace HexMapTool
 {
     public class ToolWindow : EditorWindow
     {
+        private Vector2 scrollPos;
         private ToolData myToolData;
         [MenuItem("Window/HexTool")]
         static void InitTool()
@@ -29,8 +30,10 @@ namespace HexMapTool
             GuiLine();
             myToolData.Grid.OnGui();
             GuiLine();
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos,GUILayout.ExpandWidth(true),GUILayout.ExpandHeight(true));
             myToolData.Table.OnGui();
             GuiLine();
+            EditorGUILayout.EndScrollView();
         }
         //Single Line Separator
         public void GuiLine(int i_height = 2)
