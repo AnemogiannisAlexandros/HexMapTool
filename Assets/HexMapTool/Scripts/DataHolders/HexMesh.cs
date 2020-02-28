@@ -13,12 +13,16 @@ namespace HexMapTool
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 	public class HexMesh : MonoBehaviour
 	{
-        
-        Mesh hexMesh;
-		List<Vector3> vertices;
-		List<int> triangles;
-        List<Color> colors;
-        MeshCollider meshCollider;
+        [SerializeField]
+        private Mesh hexMesh;
+        [SerializeField]
+        private List<Vector3> vertices;
+        [SerializeField]
+        private List<int> triangles;
+        [SerializeField]
+        private List<Color> colors;
+        [SerializeField]
+        private MeshCollider meshCollider;
 
         //Create a mesh
 		public void Init()
@@ -30,16 +34,23 @@ namespace HexMapTool
 			triangles = new List<int>();
             colors =  new List<Color>();
         }
-
+        public void ClearMesh() 
+        {
+            hexMesh.Clear();
+            vertices.Clear();
+            triangles.Clear();
+            colors.Clear();
+            if (meshCollider != null) 
+            {
+                meshCollider.sharedMesh.Clear();
+            }
+        }
         //Clear any mesh Data
         //Calculate Mesh from cell Data
         //assing collider
 		public void Triangulate(HexCell[] coords)
 		{
-            hexMesh.Clear();
-            vertices.Clear();
-			triangles.Clear();
-            colors.Clear();
+            ClearMesh();
             for (int i = 0; i < coords.Length; i++)
 			{
 				Triangulate(coords[i]);

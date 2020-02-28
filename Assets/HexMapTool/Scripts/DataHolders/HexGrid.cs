@@ -34,7 +34,6 @@ namespace HexMapTool
             height = 5;
             activeElevation = 1;
             defaultColor = Color.white;
-            Init();
         }
 
         private GameObject hexGrid;
@@ -44,6 +43,10 @@ namespace HexMapTool
         public HexMesh GetMesh()
         {
             return hexMesh;
+        }
+        public void SetCells(HexCell[] value) 
+        {
+            cells = value;
         }
         public HexCell[] GetCells()
         {
@@ -64,6 +67,10 @@ namespace HexMapTool
         public int GetWidth()
         {
             return width;
+        }
+        private void OnEnable()
+        {
+            Init();
         }
         public GameObject Init() 
         {
@@ -99,8 +106,7 @@ namespace HexMapTool
 
         public void DestroyGrid()
         {
-            hexMesh.GetComponent<MeshFilter>().sharedMesh.Clear();
-            hexMesh.GetComponent<MeshCollider>().sharedMesh.Clear();
+            hexMesh.ClearMesh();
             cells = new HexCell[0];
         }
         public void TouchCell(Vector3 position, HexCoordinates coords)
@@ -192,12 +198,20 @@ namespace HexMapTool
             {
                 if (exists)
                 {
+                   
                     cardNames.Clear();
                     foreach (ColorArchetype c in ToolData.Instance.Table.GetTable())
                     {
                         cardNames.Add(c.GetArchetypeName());
                     }
-                    selectionIndex = EditorGUILayout.Popup(selectionIndex, cardNames.ToArray());
+                    if (selectionIndex < cardNames.Count)
+                    {
+                        selectionIndex = EditorGUILayout.Popup(selectionIndex, cardNames.ToArray());
+                    }
+                    else 
+                    {
+                        selectionIndex = cardNames.Count - 1;
+                    }
                     touchedColor = ToolData.Instance.Table.GetTable()[selectionIndex].GetArchetypeColor();
                     GUILayout.Label("Current Selected Color Preview : ");
                     Rect rect = EditorGUILayout.GetControlRect(false, 15);

@@ -16,13 +16,17 @@ namespace HexMapTool
 
         public ColorTable() 
         {
-            Init();
             chosenColors.Add(new ColorArchetype());
-        } 
+        }
+        private void OnEnable()
+        {
+            Init();
+        }
 
         public void Init()
         {
             editor = new ColorArchetypeCustomEditor(this);
+            editor.Init();
         }
         public List<ColorArchetype> GetTable()
         {
@@ -77,9 +81,7 @@ namespace HexMapTool
         public ColorArchetypeCustomEditor(ScriptableObject obj)
         {
             target = obj;
-            Init();
         }
-
         private SerializedObject colorProperty;
         private bool show;
         SerializedProperty archetypeList;
@@ -143,7 +145,7 @@ namespace HexMapTool
             so.Update();
             colorProperty = new SerializedObject(ToolData.Instance.Grid);
             SerializedProperty property = colorProperty.FindProperty("touchedColor");
-            show = EditorGUILayout.Foldout(show, "Color Card Collection");
+            show = EditorGUILayout.Foldout(show, "Color Card Collection",true);
             if (show)
             {
                 reorderableList.DoLayoutList();
