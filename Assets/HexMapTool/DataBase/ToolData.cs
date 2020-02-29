@@ -43,6 +43,10 @@ namespace HexMapTool
                 {
                     Clear();
                 }
+                if (GUILayout.Button("TestSave"))
+                {
+                    SaveTest(Grid);
+                }
             }        
         }
         //Tool Initialization. Creates appropriate folders and files the first time it runs, and loads if the paths and objects already exist
@@ -82,12 +86,22 @@ namespace HexMapTool
             Grid.Init();
             Table.Init();
         }
+
+        public void SaveTest(ScriptableObject serializeable)
+        {
+            //EditorUtility.DisplayDialog("Hi There Bruv!", "Save Mesh Here", "Ok");
+            destination = "C:/Users/student26/Desktop";
+            string path = EditorUtility.SaveFilePanel("Save " + serializeable.GetType().ToString(), destination, "Mesh Data", "dat");
+        }
         //Saves Data of type ScriptableObject from  a file created at  Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
         public void Save(ScriptableObject serializeable)
         {
             json = JsonUtility.ToJson(serializeable);
+            destination = Application.persistentDataPath;
 
-            destination = Application.persistentDataPath + "/" + serializeable.GetType().ToString()  + ".dat";
+          
+
+            string path = EditorUtility.SaveFilePanel("Save "+ serializeable.GetType().ToString(), destination, serializeable.GetType().ToString(), "dat");
             FileStream file;
 
             if (File.Exists(destination))
@@ -107,7 +121,8 @@ namespace HexMapTool
         public void Load(ScriptableObject serializeable) 
         {
             FileStream file;
-            destination = Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
+            destination = EditorUtility.OpenFilePanel("Load " + serializeable.GetType().ToString(), Application.persistentDataPath, "dat");
+            //destination = Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
             if (File.Exists(destination)) 
             {
                 file = File.OpenRead(destination);

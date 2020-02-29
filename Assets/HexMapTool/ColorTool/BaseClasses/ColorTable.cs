@@ -134,7 +134,7 @@ namespace HexMapTool
                     Color.colorValue = new Color(1, 1, 1, 1);
                     Behaviour = null;
                     Data = null;
-                    show = false;
+                    show = true;
                 }
 
             };
@@ -145,7 +145,7 @@ namespace HexMapTool
             so.Update();
             colorProperty = new SerializedObject(ToolData.Instance.Grid);
             SerializedProperty property = colorProperty.FindProperty("touchedColor");
-            show = EditorGUILayout.Foldout(show, "Color Card Collection",true);
+            show = EditorGUILayout.Foldout(show, "Color Card Collection");
             if (show)
             {
                 reorderableList.DoLayoutList();

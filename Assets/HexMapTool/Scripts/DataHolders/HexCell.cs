@@ -78,6 +78,9 @@ namespace HexMapTool
             this.elevation = elevation;
             Vector3 position = GetWorldCoordinates();
             position.y = elevation * HexMetrics.elevationStep;
+            position.y +=
+                (HexMetrics.SampleNoise(position).y * 2f - 1f) *
+                HexMetrics.elevationPerturbStrength;
             SetWorldCoordinates(position);
         }
         public HexCell[] getNeighbors()

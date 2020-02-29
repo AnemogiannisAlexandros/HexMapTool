@@ -7,6 +7,31 @@ using UnityEngine;
 /// </summary>
 namespace HexMapTool
 {
+    public struct EdgeVertices
+    {
+        public Vector3 v1, v2, v3, v4;
+
+        public EdgeVertices(Vector3 corner1, Vector3 corner2)
+        {
+            v1 = corner1;
+            v2 = Vector3.Lerp(corner1, corner2, 1f / 3f);
+            v3 = Vector3.Lerp(corner1, corner2, 2f / 3f);
+            v4 = corner2;
+        }
+
+        public static EdgeVertices TerraceLerp(
+        EdgeVertices a, EdgeVertices b, int step)
+        {
+            EdgeVertices result;
+            result.v1 = HexMetrics.TerraceLerp(a.v1, b.v1, step);
+            result.v2 = HexMetrics.TerraceLerp(a.v2, b.v2, step);
+            result.v3 = HexMetrics.TerraceLerp(a.v3, b.v3, step);
+            result.v4 = HexMetrics.TerraceLerp(a.v4, b.v4, step);
+            return result;
+        }
+
+    }
+
     public enum HexEdgeType
     {
         Flat, Slope, Cliff
@@ -14,7 +39,7 @@ namespace HexMapTool
     public class HexMetrics : MonoBehaviour
     {
         //All Mathematical and Geometrical Data of a Hex
-        private static float outRadious = 10f;
+        private static float outRadious = 5f;
         private static float sideLength = outRadious;
         private static float perimeter = sideLength * 6;
         private static float apothem = Mathf.Sqrt(Mathf.Pow(outRadious, 2) - Mathf.Pow(sideLength / 2, 2));
@@ -23,9 +48,12 @@ namespace HexMapTool
         private static float inRadius = apothem;
         private static float longDiagonal = sideLength * 2;
 
-        public const float elevationStep = 5f;
+        public static Texture2D noiseSource;
 
-        public const float solidFactor = 0.75f;
+
+        public const float elevationStep = 1f;
+
+        public const float solidFactor = 0.8f;
 
         public const float blendFactor = 1f - solidFactor;
 
@@ -36,6 +64,21 @@ namespace HexMapTool
         public const int terraceSteps = terracesPerSlope * 2 + 1;
 
         public const float horizontalTerraceStepSize = 1f / terraceSteps;
+
+        public const float cellPerturbStrength = 4f;
+
+        public const float noiseScale = 0.003f;
+
+        public const float elevationPerturbStrength = .5f;
+
+        public const int chunkSizeX = 5, chunkSizeZ = 5;
+
+        public static Vector4 SampleNoise(Vector3 position)
+        {
+            return noiseSource.GetPixelBilinear(position.x * noiseScale,position.z * noiseScale);
+
+        }
+
 
         public static HexEdgeType GetEdgeType(int elevation1, int elevation2)
         {

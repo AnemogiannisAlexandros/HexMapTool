@@ -14,9 +14,13 @@ namespace HexMapTool
     public class HexGrid : ScriptableObject
     {
         [SerializeField]
-        private int width = 1;
+        private int chunkCountX = 4;
         [SerializeField]
-        private int height = 1;
+        private int chunkCountZ = 3;
+        [SerializeField]
+        private int cellCountX = 5;
+        [SerializeField]
+        private int cellCountZ = 5;
         [SerializeField]
         private int activeElevation = 0;
         [SerializeField]
@@ -27,11 +31,13 @@ namespace HexMapTool
         private HexCell[] cells;
         private HexCell currentCell;
         private HexCell previousCell;
+        private Texture2D noiseSource;
+        private HexGridChunk[] chunks;
 
         public HexGrid() 
         {
-            width = 5;
-            height = 5;
+            cellCountX = 5;
+            cellCountZ = 5;
             activeElevation = 1;
             defaultColor = Color.white;
         }
@@ -66,7 +72,7 @@ namespace HexMapTool
         }
         public int GetWidth()
         {
-            return width;
+            return cellCountX;
         }
         private void OnEnable()
         {
@@ -80,26 +86,38 @@ namespace HexMapTool
                 hexMesh = hexGrid.AddComponent<HexMesh>();
                 hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
                 defaultColor = Color.white;
-                texture = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/ColorTool/ColorBackground.jpg", typeof(Texture2D));
             }
+            noiseSource = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/noise.png", typeof(Texture2D));
+            HexMetrics.noiseSource = noiseSource;
             cardNames = new List<string>();
+            chunks = new HexGridChunk[chunkCountX * chunkCountZ];
+            cellCountX = chunkCountX * HexMetrics.chunkSizeX;
+            cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
             return hexGrid;
         }
+
+        void CreateCells ()
+        {
+		    cells = new HexCell[cellCountZ * cellCountX];
+
+		    for (int z = 0, i = 0; z < cellCountZ; z++)
+            {
+			    for (int x = 0; x < cellCountX; x++)
+                {
+				    CreateCell(x, z, i++);
+			    }   
+		    }
+	    }
 
         //Create Hex Grid with given height and width
         public void CreateGrid()
         {
+
+           
             hexMesh.Init();
-            cells = new HexCell[height * width];
+            cells = new HexCell[cellCountX * cellCountZ];
             //coordinates = new Vector3[height * width];
-            int i = 0;
-            for (int z = 0; z < height; z++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    CreateCell(x, z, i++);
-                }
-            }
+            CreateCells();
             hexMesh.Triangulate(cells);
 
         }
@@ -111,7 +129,7 @@ namespace HexMapTool
         }
         public void TouchCell(Vector3 position, HexCoordinates coords)
         {
-            int index = coords.X + coords.Z * width + coords.Z / 2;
+            int index = coords.X + coords.Z * cellCountX + coords.Z / 2;
             HexCell cell = cells[index];
             cell.SetColor(touchedColor);
             hexMesh.Triangulate(cells);
@@ -122,7 +140,7 @@ namespace HexMapTool
         }
         public HexCell GetCell(Vector3 position, HexCoordinates coords) 
         {
-            int index = coords.X + coords.Z * width + coords.Z / 2;
+            int index = coords.X + coords.Z * cellCountX + coords.Z / 2;
             return cells[index];
         }
         public void EditCell(HexCell cell) 
@@ -151,27 +169,28 @@ namespace HexMapTool
             {
                 if ((z & 1) == 0)
                 {
-                    cell.SetNeighbor(HexDirection.SE, cells[i - width]);
+                    cell.SetNeighbor(HexDirection.SE, cells[i - cellCountX]);
                     if (x > 0)
                     {
-                        cell.SetNeighbor(HexDirection.SW, cells[i - width - 1]);
+                        cell.SetNeighbor(HexDirection.SW, cells[i - cellCountX - 1]);
                     }
                 }
                 else
                 {
-                    cell.SetNeighbor(HexDirection.SW, cells[i - width]);
-                    if (x < width - 1)
+                    cell.SetNeighbor(HexDirection.SW, cells[i - cellCountX]);
+                    if (x < cellCountX - 1)
                     {
-                        cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+                        cell.SetNeighbor(HexDirection.SE, cells[i - cellCountX + 1]);
                     }
                 }
             }
             cells[i] = cell;
+            cell.SetElevation(0);
         }
         public void RestoreDefaults()
         {
-            width = 5;
-            height = 5;
+            cellCountX = 5;
+            cellCountZ = 5;
             activeElevation = 0;
             touchedColor = defaultColor;
             Refresh();
@@ -181,7 +200,6 @@ namespace HexMapTool
         private static List<string> cardNames;
         private static bool exists = false;
         private static bool show = false;
-        private Texture2D texture;
         private string MeshName;
 
         //Internal Implementation of EdiotrWinodw onGUI.
@@ -228,8 +246,8 @@ namespace HexMapTool
                     //GUILayout.Label(texture, GUILayout.Width(1000));
 
                 }
-                width = EditorGUILayout.IntField("Width x : ", width);
-                height = EditorGUILayout.IntField("Length z : ", height);
+                chunkCountX = EditorGUILayout.IntField("Chunk Size x : " + chunkCountX + "*" + HexMetrics.chunkSizeX, chunkCountX);
+                chunkCountZ = EditorGUILayout.IntField("Chunk Size z : " + chunkCountZ + "*" + HexMetrics.chunkSizeZ, chunkCountZ);
                 activeElevation = EditorGUILayout.IntField("Current Elevation y : ", activeElevation);
                 if (GUILayout.Button("Generate Map"))
                 {

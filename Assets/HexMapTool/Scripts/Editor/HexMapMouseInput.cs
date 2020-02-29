@@ -59,9 +59,9 @@ namespace HexMapTool
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-               // Debug.Log("touched at Vector3 : " + hit.point);
+                Debug.Log("touched at Vector3 : " + hit.point);
                 HexCoordinates coordinates = HexCoordinates.FromPosition(hit.point);
-                Debug.Log("touched at HexCoordinates " + coordinates.ToString());
+               // Debug.Log("touched at HexCoordinates " + coordinates.ToString());
                 HexGrid grid =  ToolData.Instance.Grid;
                 grid.EditCell(grid.GetCell(hit.point,coordinates));
                 //grid.TouchCell(hit.point,coordinates);
