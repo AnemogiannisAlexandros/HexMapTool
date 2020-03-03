@@ -270,8 +270,14 @@ namespace HexMapTool
                 }
                 if (GUILayout.Button("Load Map"))
                 {
+                    if (hexGrid == null)
+                    {
+                        CreateGrid();
+                    }
+                    DestroyGrid();
                     ToolData.Load(ToolData.Instance.MeshDataObj);
-                    ToolData.Instance.Grid.LoadGrid();
+                    LoadGrid();
+                    //ToolData.Instance.Grid.LoadGrid();
                 }
                 if (GUILayout.Button("Clear Map"))
                 {

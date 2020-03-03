@@ -52,8 +52,8 @@ namespace HexMapTool
         //assing collider
         public void TriangulateWithData()
         {
-            //ClearMesh();
-            meshData.UpdateMesh(vertices, triangles, colors);
+            
+            //meshData.UpdateMesh(vertices, triangles, colors);
             hexMesh.vertices = meshData.GetVertices().ToArray();
             hexMesh.triangles = meshData.GetTriangles().ToArray();
             hexMesh.colors = meshData.GetColors().ToArray();
