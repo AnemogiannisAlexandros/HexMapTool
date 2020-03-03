@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784e8040d792276429b28b2f21f8c0a2, type: 3}
   m_Name: GridData
   m_EditorClassIdentifier: 
-  width: 5
-  height: 5
+  chunkCountX: 4
+  chunkCountZ: 3
+  cellCountX: 20
+  cellCountZ: 15
   activeElevation: 1
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   touchedColor: {r: 0, g: 0, b: 0, a: 0}

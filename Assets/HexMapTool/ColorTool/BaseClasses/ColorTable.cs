@@ -10,10 +10,27 @@ namespace HexMapTool
 
     public class ColorTable : ScriptableObject, IColorTable
     {
+        private string tableName;
         [SerializeField]
         private List<ColorArchetype> chosenColors = new List<ColorArchetype>();
         ColorArchetypeCustomEditor editor;
 
+        public ColorTable(string tableName ,params Color[] colors) 
+        {
+            this.tableName = tableName;
+            foreach (Color c in colors) 
+            {
+                chosenColors.Add(new ColorArchetype("SomeName",c));
+            }
+        }
+        public ColorTable(string tableName,params ColorArchetype[] archetypes) 
+        {
+            this.tableName = tableName;
+            foreach (ColorArchetype c in archetypes) 
+            {
+                chosenColors.Add(c);
+            }
+        }
         public ColorTable() 
         {
             chosenColors.Add(new ColorArchetype());
@@ -25,8 +42,11 @@ namespace HexMapTool
 
         public void Init()
         {
-            editor = new ColorArchetypeCustomEditor(this);
-            editor.Init();
+            if (editor == null) 
+            {
+                editor = new ColorArchetypeCustomEditor(this);
+                editor.Init();
+            }
         }
         public List<ColorArchetype> GetTable()
         {
@@ -145,9 +165,13 @@ namespace HexMapTool
             so.Update();
             colorProperty = new SerializedObject(ToolData.Instance.Grid);
             SerializedProperty property = colorProperty.FindProperty("touchedColor");
-            show = EditorGUILayout.Foldout(show, "Color Card Collection");
+            show = EditorGUILayout.Foldout(show, "Color Card Collection",true);
             if (show)
             {
+                if (GUILayout.Button("Load Presets")) 
+                {
+                    ToolData.Load(ToolData.Instance.Table);
+                }
                 reorderableList.DoLayoutList();
             }
             so.ApplyModifiedProperties();

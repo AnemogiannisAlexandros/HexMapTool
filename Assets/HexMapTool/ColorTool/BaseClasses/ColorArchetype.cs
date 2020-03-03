@@ -24,6 +24,11 @@ namespace HexMapTool
             archetypeName = "SomeName";
             color = Color.white;
         }
+        public ColorArchetype(string colorName,Color col) 
+        {
+            archetypeName = colorName;
+            color = col;
+        }
 
         public Color GetArchetypeColor()
         {

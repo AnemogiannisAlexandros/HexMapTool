@@ -18,10 +18,21 @@ namespace HexMapTool
         string json;
 
         private bool show;
-
         public HexGrid Grid;
         public ColorTable Table;
         string destination;
+
+        private void Awake()
+        {
+            if (m_toolData == null)
+            {
+                m_toolData = this;
+            }
+            else 
+            {
+                DestroyImmediate(this);
+            }
+        }
 
         //Tool Gui. Implements the Gui of HexGrid And Color Table
         public void OnGui() 
@@ -43,15 +54,27 @@ namespace HexMapTool
                 {
                     Clear();
                 }
-                if (GUILayout.Button("TestSave"))
-                {
-                    SaveTest(Grid);
-                }
             }        
         }
         //Tool Initialization. Creates appropriate folders and files the first time it runs, and loads if the paths and objects already exist
         public void Init()
         {
+            if (!Directory.Exists(Application.persistentDataPath + "/GridSaves")) 
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/GridSaves");
+            }
+            if (!Directory.Exists(Application.persistentDataPath + "/ColorTableSaves")) 
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/ColorTableSaves");
+                ColorTable preset01 = new ColorTable("RGB", new ColorArchetype("Red", Color.red), new ColorArchetype("Green", Color.green), new ColorArchetype("Blue", Color.blue)); ;
+                ColorTable preset02 = new ColorTable("YCM", new ColorArchetype("Yellow", Color.yellow), new ColorArchetype("Cyan", Color.cyan), new ColorArchetype("Magenta", Color.magenta)); ;
+                SaveNoPanel("RGB",preset01);
+                SaveNoPanel("YCM",preset02);
+            }
+            if (!Directory.Exists(Application.persistentDataPath + "/MeshGridData"))
+            {
+                Directory.CreateDirectory(Application.persistentDataPath + "/MeshGridData");
+            }
 
             if (m_toolData == null)
             {
@@ -86,31 +109,100 @@ namespace HexMapTool
             Grid.Init();
             Table.Init();
         }
-
-        public void SaveTest(ScriptableObject serializeable)
+        private void SaveNoPanel(string fileName,ScriptableObject serializeable) 
         {
-            //EditorUtility.DisplayDialog("Hi There Bruv!", "Save Mesh Here", "Ok");
-            destination = "C:/Users/student26/Desktop";
-            string path = EditorUtility.SaveFilePanel("Save " + serializeable.GetType().ToString(), destination, "Mesh Data", "dat");
+            string destination;
+            switch (serializeable)
+            {
+                case HexGrid gr:
+                    {
+                        destination = Application.persistentDataPath + "/GridSaves/";
+                        break;
+                    }
+                case ColorTable tb:
+                    {
+                        destination = Application.persistentDataPath + "/ColorTableSaves/";
+                        break;
+                    }
+                case null:
+                    {
+                        destination = Application.persistentDataPath;
+                        break;
+                    }
+                default:
+                    {
+                        destination = Application.persistentDataPath;
+                        break;
+                    }
+
+            }
+            Debug.Log(destination);
+            string json = JsonUtility.ToJson(serializeable);
+
+
+
+
+            string path = destination + fileName + ".dat";
+            FileStream file;
+            int i = 0;
+            while (File.Exists(path)) 
+            {
+                path = destination + fileName + i + ".dat";
+                i++;
+            }
+            file = File.Create(path);
+            File.SetAttributes(path, FileAttributes.Normal);
+            string data = json;
+            BinaryFormatter bf = new BinaryFormatter();
+            bf.Serialize(file, data);
+            file.Close();
         }
         //Saves Data of type ScriptableObject from  a file created at  Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
-        public void Save(ScriptableObject serializeable)
+        public static void Save(ScriptableObject serializeable)
         {
-            json = JsonUtility.ToJson(serializeable);
-            destination = Application.persistentDataPath;
+            string destination;
+            switch (serializeable)
+            {
+                case HexGrid gr:
+                    {
+                        destination = Application.persistentDataPath + "/GridSaves";
+                        break;
+                    }
+                case ColorTable tb:
+                    {
+                        destination = Application.persistentDataPath + "/ColorTableSaves";
+                        break;
+                    }
+                case null:
+                    {
+                        destination = Application.persistentDataPath;
+                        break;
+                    }
+                default:
+                    {
+                        destination = Application.persistentDataPath;
+                        break;
+                    }
+
+            }
+           string json = JsonUtility.ToJson(serializeable);
+            
 
           
 
             string path = EditorUtility.SaveFilePanel("Save "+ serializeable.GetType().ToString(), destination, serializeable.GetType().ToString(), "dat");
             FileStream file;
 
-            if (File.Exists(destination))
+            if (File.Exists(path))
             {
-                file = File.OpenWrite(destination);
+                File.SetAttributes(path, FileAttributes.Normal);
+                file = File.OpenWrite(path);
             }
             else
             {
-                file = File.Create(destination);
+                file = File.Create(path);
+                File.SetAttributes(path, FileAttributes.Normal);
+
             }
             string data = json;
             BinaryFormatter bf = new BinaryFormatter();
@@ -118,10 +210,30 @@ namespace HexMapTool
             file.Close();
         }
         //Loads Data of type ScriptableObject from  a file created at  Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
-        public void Load(ScriptableObject serializeable) 
+        public static void Load(ScriptableObject serializeable) 
         {
             FileStream file;
-            destination = EditorUtility.OpenFilePanel("Load " + serializeable.GetType().ToString(), Application.persistentDataPath, "dat");
+            string path;
+            switch (serializeable)
+            {
+                case HexGrid gr:
+                    {
+                        path = Application.persistentDataPath + "/GridSaves";
+                        break;
+                    }
+                case ColorTable tb:
+                    {
+                        path = Application.persistentDataPath + "/ColorTableSaves";
+                        break;
+                    }
+                default:
+                    {
+                        path = Application.persistentDataPath;
+                        break;
+                    }
+
+            }
+            string destination = EditorUtility.OpenFilePanel("Load " + serializeable.GetType().ToString(), path, "dat");
             //destination = Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
             if (File.Exists(destination)) 
             {
@@ -136,7 +248,7 @@ namespace HexMapTool
             BinaryFormatter bf = new BinaryFormatter();
             string data = (string)bf.Deserialize(file);
             file.Close();
-            json = data;
+            string json = data;
             Debug.Log(json);
             JsonUtility.FromJsonOverwrite(json, serializeable);    
         }

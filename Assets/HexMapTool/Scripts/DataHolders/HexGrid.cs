@@ -78,22 +78,14 @@ namespace HexMapTool
         {
             Init();
         }
-        public GameObject Init() 
+        public void Init() 
         {
-            if (hexGrid == null)
-            {
-                hexGrid = new GameObject("Hex Grid");
-                hexMesh = hexGrid.AddComponent<HexMesh>();
-                hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
-                defaultColor = Color.white;
-            }
             noiseSource = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/noise.png", typeof(Texture2D));
             HexMetrics.noiseSource = noiseSource;
             cardNames = new List<string>();
             chunks = new HexGridChunk[chunkCountX * chunkCountZ];
             cellCountX = chunkCountX * HexMetrics.chunkSizeX;
             cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
-            return hexGrid;
         }
 
         void CreateCells ()
@@ -113,7 +105,13 @@ namespace HexMapTool
         public void CreateGrid()
         {
 
-           
+            if (hexGrid == null)
+            {
+                hexGrid = new GameObject("Hex Grid");
+                hexMesh = hexGrid.AddComponent<HexMesh>();
+                hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
+                defaultColor = Color.white;
+            }
             hexMesh.Init();
             cells = new HexCell[cellCountX * cellCountZ];
             //coordinates = new Vector3[height * width];
