@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace HexMapTool
 {
     [Serializable]
-    public class MeshData
+    public class MeshData : ScriptableObject
     {
         [SerializeField]
         private List<Vector3> vertices;
@@ -16,9 +16,6 @@ namespace HexMapTool
         [SerializeField]
         private List<Color> colors;
 
-
-        private string json;
-        private string destination;
         public MeshData()
         {
             vertices = new List<Vector3>();
@@ -54,27 +51,6 @@ namespace HexMapTool
             this.vertices = verts;
             this.triangles = tris;
             this.colors = col;
-        }
-        public void SaveMeshData(string meshName)
-        {
-            json = JsonUtility.ToJson(this);
-
-            destination = Application.persistentDataPath + "/" + meshName + ".dat";
-            FileStream file;
-
-            if (File.Exists(destination))
-            {
-                File.Delete(destination);
-                file = File.Create(destination);
-            }
-            else
-            {
-                file = File.Create(destination);
-            }
-            string data = json;
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(file, data);
-            file.Close();
         }
     }
 }

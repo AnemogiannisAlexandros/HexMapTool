@@ -20,6 +20,7 @@ namespace HexMapTool
         private bool show;
         public HexGrid Grid;
         public ColorTable Table;
+        public MeshData MeshDataObj;
         string destination;
 
         private void Awake()
@@ -40,17 +41,7 @@ namespace HexMapTool
             show = EditorGUILayout.Foldout(show, "Tool Functions", true);
             if (show)
             {
-                if (GUILayout.Button("Save"))
-                {
-                    Save(Grid);
-                    Save(Table);
-                }
-                if (GUILayout.Button("Load"))
-                {
-                    Load(Grid);
-                    Load(Table);
-                }
-                if (GUILayout.Button("Clear"))
+                if (GUILayout.Button("Clear All"))
                 {
                     Clear();
                 }
@@ -68,12 +59,19 @@ namespace HexMapTool
                 Directory.CreateDirectory(Application.persistentDataPath + "/ColorTableSaves");
                 ColorTable preset01 = new ColorTable("RGB", new ColorArchetype("Red", Color.red), new ColorArchetype("Green", Color.green), new ColorArchetype("Blue", Color.blue)); ;
                 ColorTable preset02 = new ColorTable("YCM", new ColorArchetype("Yellow", Color.yellow), new ColorArchetype("Cyan", Color.cyan), new ColorArchetype("Magenta", Color.magenta)); ;
-                SaveNoPanel("RGB",preset01);
-                SaveNoPanel("YCM",preset02);
+                ColorTable preset03 = new ColorTable("RPGTemplate", new ColorArchetype("Heal", new Color(0.515f, 1.0f, .131f, 1.0f)),new ColorArchetype("Do Damage", new Color(.7f,.31f,.3f,1f)),
+                new ColorArchetype("Quest",new Color(1f,.95f,.155f,1f)), new ColorArchetype("Dialogue",new Color(0.731f,1f,0.992f,1f)),
+                new ColorArchetype("City", new Color(0.641f,0.641f,0.641f,1f)),new ColorArchetype("Vendor",new Color(0.425f,0.606f,0.990f,1f)),
+                new ColorArchetype("AMBUSH!",new Color(1f,0.156f,0f,1f)), new ColorArchetype("Treasure",new Color(0.820f,0.401f,0.181f,1f)),
+                new ColorArchetype("Secret", new Color(0.834f,0.291f,0.981f,1f)),new ColorArchetype("Teleport", new Color(0.990f,0.658f,0.22f,1f)),
+                new ColorArchetype("Difficult Terrain",new Color(0.962f,0.925f,0.658f,1f)));
+                DirectSave(preset01.GetTableName(), preset01);
+                DirectSave(preset02.GetTableName(), preset02);
+                DirectSave(preset03.GetTableName(), preset03);
             }
-            if (!Directory.Exists(Application.persistentDataPath + "/MeshGridData"))
+            if (!Directory.Exists(Application.persistentDataPath + "/MeshDataSaves"))
             {
-                Directory.CreateDirectory(Application.persistentDataPath + "/MeshGridData");
+                Directory.CreateDirectory(Application.persistentDataPath + "/MeshDataSaves");
             }
 
             if (m_toolData == null)
@@ -91,13 +89,16 @@ namespace HexMapTool
                 {
                     Grid = (HexGrid)AssetDatabase.LoadAssetAtPath(destination + "/GridData.asset", typeof(HexGrid));
                     Table = (ColorTable)AssetDatabase.LoadAssetAtPath(destination + "/TableData.asset", typeof(ColorTable));
+                    MeshDataObj = (MeshData)AssetDatabase.LoadAssetAtPath(destination + "/MeshData.asset", typeof(MeshData));
                 }
                 else
                 {
                     Grid = CreateInstance<HexGrid>();
                     Table = CreateInstance<ColorTable>();
+                    MeshDataObj = CreateInstance<MeshData>();
                     AssetDatabase.CreateAsset(Grid, destination + "/GridData.asset");
                     AssetDatabase.CreateAsset(Table, destination + "/TableData.asset");
+                    AssetDatabase.CreateAsset(MeshDataObj, destination + "/MeshData.asset");
                 }
             }
             else
@@ -105,11 +106,12 @@ namespace HexMapTool
                 AssetDatabase.CreateFolder("HexMapTool", "Database");
                 AssetDatabase.CreateAsset(Grid, destination + "/GridData.asset");
                 AssetDatabase.CreateAsset(Table, destination + "/TableData.asset");
+                AssetDatabase.CreateAsset(MeshDataObj, destination + "/MeshData.asset");
             }
             Grid.Init();
             Table.Init();
         }
-        private void SaveNoPanel(string fileName,ScriptableObject serializeable) 
+        private void DirectSave(string fileName,ScriptableObject serializeable) 
         {
             string destination;
             switch (serializeable)
@@ -124,9 +126,9 @@ namespace HexMapTool
                         destination = Application.persistentDataPath + "/ColorTableSaves/";
                         break;
                     }
-                case null:
+                case MeshData md:
                     {
-                        destination = Application.persistentDataPath;
+                        destination = Application.persistentDataPath + "/MeshDataSaves";
                         break;
                     }
                 default:
@@ -173,9 +175,9 @@ namespace HexMapTool
                         destination = Application.persistentDataPath + "/ColorTableSaves";
                         break;
                     }
-                case null:
+                case MeshData md:
                     {
-                        destination = Application.persistentDataPath;
+                        destination = Application.persistentDataPath + "/MeshDataSaves";
                         break;
                     }
                 default:
@@ -226,6 +228,11 @@ namespace HexMapTool
                         path = Application.persistentDataPath + "/ColorTableSaves";
                         break;
                     }
+                case MeshData md:
+                    {
+                        path = Application.persistentDataPath + "/MeshDataSaves";
+                        break;
+                    }
                 default:
                     {
                         path = Application.persistentDataPath;
@@ -249,7 +256,7 @@ namespace HexMapTool
             string data = (string)bf.Deserialize(file);
             file.Close();
             string json = data;
-            Debug.Log(json);
+            //Debug.Log(json);
             JsonUtility.FromJsonOverwrite(json, serializeable);    
         }
         //Calls the appropriate methods on each Scriptable object to clear its current data and return to the default state.

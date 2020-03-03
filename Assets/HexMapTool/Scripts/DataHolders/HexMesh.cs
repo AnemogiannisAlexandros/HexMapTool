@@ -29,7 +29,7 @@ namespace HexMapTool
             vertices = new List<Vector3>();
 			triangles = new List<int>();
             colors =  new List<Color>();
-            meshData = new MeshData();
+            meshData = ToolData.Instance.MeshDataObj;
         }
         public MeshData GetMeshData()
         {
@@ -50,8 +50,25 @@ namespace HexMapTool
         //Clear any mesh Data
         //Calculate Mesh from cell Data
         //assing collider
+        public void TriangulateWithData()
+        {
+            //ClearMesh();
+            meshData.UpdateMesh(vertices, triangles, colors);
+            hexMesh.vertices = meshData.GetVertices().ToArray();
+            hexMesh.triangles = meshData.GetTriangles().ToArray();
+            hexMesh.colors = meshData.GetColors().ToArray();
+            //Debug.Log(hexMesh.vertices.Length);
+            // hexMesh.RecalculateBounds();
+            //hexMesh.RecalculateNormals();
+            if (meshCollider == null)
+            {
+                meshCollider = gameObject.AddComponent<MeshCollider>();
+            }
+            meshCollider.sharedMesh = hexMesh;
+        }
 		public void Triangulate(HexCell[] coords)
 		{
+            Debug.Log("Triangulate Runs");
             ClearMesh();
             if (coords != null)
             {

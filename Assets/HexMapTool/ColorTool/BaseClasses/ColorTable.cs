@@ -7,14 +7,22 @@ using UnityEditorInternal;
 
 namespace HexMapTool
 {
+    public interface IColorTable
+    {
+        ColorArchetype GetColorArchetype(int index);
+        ColorArchetype FindColorArchetype(ColorArchetype archetype);
+    }
 
     public class ColorTable : ScriptableObject, IColorTable
     {
+        #region Data
         private string tableName;
         [SerializeField]
         private List<ColorArchetype> chosenColors = new List<ColorArchetype>();
-        ColorArchetypeCustomEditor editor;
+        ColorTableCustomEditor editor;
+        #endregion
 
+        #region Constructors
         public ColorTable(string tableName ,params Color[] colors) 
         {
             this.tableName = tableName;
@@ -35,6 +43,9 @@ namespace HexMapTool
         {
             chosenColors.Add(new ColorArchetype());
         }
+        #endregion
+
+      
         private void OnEnable()
         {
             Init();
@@ -44,9 +55,14 @@ namespace HexMapTool
         {
             if (editor == null) 
             {
-                editor = new ColorArchetypeCustomEditor(this);
+                editor = new ColorTableCustomEditor(this);
                 editor.Init();
             }
+        }
+        #region Getters_Setters_HelperFunctions
+        public string GetTableName()
+        {
+            return tableName;
         }
         public List<ColorArchetype> GetTable()
         {
@@ -80,33 +96,38 @@ namespace HexMapTool
         {
             return chosenColors[index];
         }
+        #endregion Getters_Setters
         public void OnGui()
         {
             editor.OnGui();
         }
     }
-    public interface IColorTable
+   
+    /// <summary>
+    /// Custom Editor of ColorTable Class
+    /// </summary>
+    public class ColorTableCustomEditor
     {
-        ColorArchetype GetColorArchetype(int index);
-        ColorArchetype FindColorArchetype(ColorArchetype archetype);
-    }
-
-    public class ColorArchetypeCustomEditor
-    {
+        #region Data
         private ScriptableObject target;
-        public ColorArchetypeCustomEditor()
-        {
-
-        }
-        public ColorArchetypeCustomEditor(ScriptableObject obj)
-        {
-            target = obj;
-        }
         private SerializedObject colorProperty;
         private bool show;
         SerializedProperty archetypeList;
         private ReorderableList reorderableList;
         SerializedObject so;
+        #endregion
+        #region Constructors
+        public ColorTableCustomEditor()
+        {
+
+        }
+        public ColorTableCustomEditor(ScriptableObject obj)
+        {
+            target = obj;
+        }
+        #endregion
+       
+        //Creates our Reorderable List of Custom ColorArchetypes
         public void Init()
         {
             so = new SerializedObject(target);
@@ -160,6 +181,7 @@ namespace HexMapTool
             };
            
         }
+        //On Gui Method of our Color Table Class
         public void OnGui()
         {
             so.Update();

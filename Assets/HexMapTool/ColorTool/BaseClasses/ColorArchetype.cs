@@ -7,9 +7,22 @@ using UnityEditorInternal;
 
 namespace HexMapTool
 {
+    public interface IColorArchetype
+    {
+        string GetArchetypeName();
+        Color GetArchetypeColor();
+        ColorBehaviour GetColorBehaviour();
+        ColorBehaviourData GetColorBehaviourData();
+
+        void SetArchetypeName(string name);
+        void SetArchetypeColor(Color color);
+        void SetColorBehaviour(ColorBehaviour colorBehaviour);
+        void SetColorBehaviourData(ColorBehaviourData colorBehaviourData);
+    }
     [Serializable]
     public class ColorArchetype : IColorArchetype
     {
+        #region Data
         [SerializeField]
         private string archetypeName;
         [SerializeField]
@@ -18,7 +31,9 @@ namespace HexMapTool
         private ColorBehaviour colorJob;
         [SerializeField]
         private ColorBehaviourData jobData;
+        #endregion
 
+        #region Constructors
         public ColorArchetype()
         {
             archetypeName = "SomeName";
@@ -29,7 +44,8 @@ namespace HexMapTool
             archetypeName = colorName;
             color = col;
         }
-
+        #endregion
+        #region Getters_Setters
         public Color GetArchetypeColor()
         {
             return color;
@@ -69,17 +85,7 @@ namespace HexMapTool
         {
             this.jobData = colorBehaviourData;
         }
+        #endregion
     }
-    public interface IColorArchetype
-    {
-        string GetArchetypeName();
-        Color GetArchetypeColor();
-        ColorBehaviour GetColorBehaviour();
-        ColorBehaviourData GetColorBehaviourData();
-
-        void SetArchetypeName(string name);
-        void SetArchetypeColor(Color color);
-        void SetColorBehaviour(ColorBehaviour colorBehaviour);
-        void SetColorBehaviourData(ColorBehaviourData colorBehaviourData);
-    }
+    
 }

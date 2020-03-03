@@ -117,7 +117,17 @@ namespace HexMapTool
             //coordinates = new Vector3[height * width];
             CreateCells();
             hexMesh.Triangulate(cells);
-
+        }
+        public void LoadGrid()
+        {
+            if (hexGrid == null)
+            {
+                hexGrid = new GameObject("Hex Grid");
+                hexMesh = hexGrid.AddComponent<HexMesh>();
+                hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
+                defaultColor = Color.white;
+            }
+            hexMesh.TriangulateWithData();
         }
 
         public void DestroyGrid()
@@ -191,6 +201,7 @@ namespace HexMapTool
             cellCountZ = 5;
             activeElevation = 0;
             touchedColor = defaultColor;
+            DestroyGrid();
             Refresh();
         }
 
@@ -255,10 +266,13 @@ namespace HexMapTool
                 }
                 if (GUILayout.Button("Save map"))
                 {
-                    hexMesh.GetMeshData().SaveMeshData(MeshName);
+                    ToolData.Save(ToolData.Instance.MeshDataObj);
                 }
-                GUILayout.Label("Mesh File Name",EditorStyles.boldLabel);
-                MeshName = GUILayout.TextField(MeshName);
+                if (GUILayout.Button("Load Map"))
+                {
+                    ToolData.Load(ToolData.Instance.MeshDataObj);
+                    ToolData.Instance.Grid.LoadGrid();
+                }
                 if (GUILayout.Button("Clear Map"))
                 {
                     // Debug.Log("Deleting Map");
