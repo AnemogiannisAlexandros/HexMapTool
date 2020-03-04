@@ -99,7 +99,21 @@ namespace HexMapTool
 				    CreateCell(x, z, i++);
 			    }   
 		    }
-	    }
+            ToolData.Instance.MeshDataObj.SetSize(new Vector2Int(cellCountX, cellCountZ));
+            ToolData.Instance.MeshDataObj.SetCells(cells);
+        }
+        void CreateCells(int xsize, int ysize) 
+        {
+            cells = new HexCell[xsize * ysize];
+
+            for (int z = 0, i = 0; z < ysize; z++)
+            {
+                for (int x = 0; x < xsize; x++)
+                {
+                    CreateCell(x, z, i++);
+                }
+            }
+        }
 
         //Create Hex Grid with given height and width
         public void CreateGrid()
@@ -113,7 +127,7 @@ namespace HexMapTool
                 defaultColor = Color.white;
             }
             hexMesh.Init();
-            cells = new HexCell[cellCountX * cellCountZ];
+            //cells = new HexCell[cellCountX * cellCountZ];
             //coordinates = new Vector3[height * width];
             CreateCells();
             hexMesh.Triangulate(cells);
@@ -127,6 +141,8 @@ namespace HexMapTool
                 hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
                 defaultColor = Color.white;
             }
+            hexMesh.Init();
+            cells = ToolData.Instance.MeshDataObj.GetCells();
             hexMesh.TriangulateWithData();
         }
 
@@ -275,8 +291,10 @@ namespace HexMapTool
                         CreateGrid();
                     }
                     DestroyGrid();
+
                     ToolData.Load(ToolData.Instance.MeshDataObj);
                     LoadGrid();
+                    
                     //ToolData.Instance.Grid.LoadGrid();
                 }
                 if (GUILayout.Button("Clear Map"))

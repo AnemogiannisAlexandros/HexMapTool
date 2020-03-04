@@ -256,7 +256,7 @@ namespace HexMapTool
             string data = (string)bf.Deserialize(file);
             file.Close();
             string json = data;
-            //Debug.Log(json);
+            Debug.Log(json);
             JsonUtility.FromJsonOverwrite(json, serializeable);    
         }
         //Calls the appropriate methods on each Scriptable object to clear its current data and return to the default state.

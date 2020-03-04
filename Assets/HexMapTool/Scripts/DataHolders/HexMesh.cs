@@ -68,7 +68,7 @@ namespace HexMapTool
         }
 		public void Triangulate(HexCell[] coords)
 		{
-            Debug.Log("Triangulate Runs");
+           
             ClearMesh();
             if (coords != null)
             {
@@ -77,7 +77,9 @@ namespace HexMapTool
                     Triangulate(coords[i]);
                 }
             }
+
             meshData.UpdateMesh(vertices, triangles, colors);
+            
             hexMesh.vertices = meshData.GetVertices().ToArray();
             hexMesh.triangles = meshData.GetTriangles().ToArray();
             hexMesh.colors = meshData.GetColors().ToArray();
