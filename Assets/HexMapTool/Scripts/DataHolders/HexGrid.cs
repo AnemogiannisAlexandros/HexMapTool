@@ -32,12 +32,13 @@ namespace HexMapTool
         private HexCell currentCell;
         private HexCell previousCell;
         private Texture2D noiseSource;
+
         private HexGridChunk[] chunks;
 
         public HexGrid() 
         {
-            cellCountX = 5;
-            cellCountZ = 5;
+            cellCountX = HexMetrics.chunkSizeX;
+            cellCountZ = HexMetrics.chunkSizeZ;
             activeElevation = 1;
             defaultColor = Color.white;
         }
@@ -46,10 +47,6 @@ namespace HexMapTool
 
         HexMesh hexMesh;
 
-        public HexMesh GetMesh()
-        {
-            return hexMesh;
-        }
         public void SetCells(HexCell[] value) 
         {
             cells = value;
@@ -102,19 +99,37 @@ namespace HexMapTool
             ToolData.Instance.MeshDataObj.SetSize(new Vector2Int(cellCountX, cellCountZ));
             ToolData.Instance.MeshDataObj.SetCells(cells);
         }
-        void CreateCells(int xsize, int ysize) 
+        public void CreateGridWithChunks() 
         {
-            cells = new HexCell[xsize * ysize];
-
-            for (int z = 0, i = 0; z < ysize; z++)
+            if (hexGrid == null) 
             {
-                for (int x = 0; x < xsize; x++)
+                hexGrid = new GameObject("HexGrid");
+                defaultColor = Color.white;
+            }
+            for (int i = 0; i < chunkCountX; i++) 
+            {
+                for (int j = 0; j < chunkCountZ; j++) 
                 {
-                    CreateCell(x, z, i++);
+                    Debug.Log("Number of Chunks : " + ( j + (i) * chunkCountZ));
+                    chunks[j + (i) * chunkCountZ] = new HexGridChunk();
+                    chunks[j + (i) * chunkCountZ].Init();
+                    chunks[j + (i) * chunkCountZ].GetChunk().transform.SetParent(hexGrid.transform);
+                    chunks[j + (i) * chunkCountZ].GetMesh().Init();
                 }
             }
-        }
+            CreateCells();
+            int itterations = 0;
 
+            foreach (HexGridChunk chunk in chunks)
+            {
+                for (int i = 0; i < HexMetrics.chunkSizeX*HexMetrics.chunkSizeZ; i++) 
+                {
+                    chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
+                }
+                chunk.GetMesh().Triangulate(chunk.GetCells());
+                itterations++;
+            }
+        }
         //Create Hex Grid with given height and width
         public void CreateGrid()
         {
@@ -148,19 +163,68 @@ namespace HexMapTool
 
         public void DestroyGrid()
         {
-            hexMesh.ClearMesh();
+            DestroyImmediate(hexGrid);
             cells = new HexCell[0];
+        }
+        public void TouchCell(Vector3 position, HexCoordinates coords, HexGridChunk chunk) 
+        {
+            int index = coords.X + coords.Z * cellCountX + coords.Z / 2;
+            HexCell cell = cells[index];
+            cell.SetColor(touchedColor);
+            //hexMesh.Triangulate(cells);
         }
         public void TouchCell(Vector3 position, HexCoordinates coords)
         {
             int index = coords.X + coords.Z * cellCountX + coords.Z / 2;
             HexCell cell = cells[index];
             cell.SetColor(touchedColor);
-            hexMesh.Triangulate(cells);
+            //hexMesh.Triangulate(cells);
+            index = Mathf.FloorToInt(index / (HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ));
+            chunks[index].GetMesh().Triangulate(chunks[index].GetCells());
         }
         public void Refresh() 
         {
             hexMesh.Triangulate(cells);
+        }
+        public void RefreshChunk(int index) 
+        {
+            chunks[index].GetMesh().Triangulate(chunks[index].GetCells());
+            Debug.Log("Running");
+
+            //if (index > 0 && index < chunks.Length-1)
+            //{
+            //    for (int i = index - 1; i <= index + 1; i++)
+            //    {
+            //        chunks[i].GetMesh().Triangulate(chunks[i].GetCells());
+            //    }
+            //}
+            //else if (index == 0)
+            //{
+            //    for (int i = index; i <= index + 1; i++)
+            //    {
+            //        chunks[i].GetMesh().Triangulate(chunks[i].GetCells());
+            //    }
+            //}
+            //else 
+            //{
+            //    for (int i = index; i >= index - 1; i--)
+            //    {
+            //        chunks[i].GetMesh().Triangulate(chunks[i].GetCells());
+            //    }
+            //}
+        }
+        public void RefreshNeighbours(HexCell cell)
+        {
+            HexCell[] neighbors = cell.getNeighbors();
+            foreach (HexCell c in neighbors) 
+            {
+                if (c != null)
+                {
+                    int cellIndex = c.GetCoordinates().X + c.GetCoordinates().Z * cellCountX + c.GetCoordinates().Z / 2;
+                    cellIndex = Mathf.FloorToInt(cellIndex / (HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ));
+                    RefreshChunk(cellIndex);
+                }
+            }
         }
         public HexCell GetCell(Vector3 position, HexCoordinates coords) 
         {
@@ -169,9 +233,13 @@ namespace HexMapTool
         }
         public void EditCell(HexCell cell) 
         {
+            int index = cell.GetCoordinates().X + cell.GetCoordinates().Z * cellCountX + cell.GetCoordinates().Z / 2;
             cell.SetColor(touchedColor);
             cell.SetElevation(activeElevation);
-            Refresh();
+            index = Mathf.FloorToInt(index / (HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ));
+            RefreshChunk(index);
+            Debug.Log("Editing Chunk " + index);
+            RefreshNeighbours(cell);
         }
         private void CreateCell(int x, int z, int i)
         {
@@ -278,7 +346,8 @@ namespace HexMapTool
                 {
                     Init();
                     // Debug.Log("Generating Map");
-                    CreateGrid();
+                    //CreateGrid();
+                    CreateGridWithChunks();
                 }
                 if (GUILayout.Button("Save map"))
                 {

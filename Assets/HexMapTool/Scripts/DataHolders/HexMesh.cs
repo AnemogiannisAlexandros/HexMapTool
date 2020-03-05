@@ -37,7 +37,7 @@ namespace HexMapTool
         }
         public void ClearMesh() 
         {
-            meshData.Clear();
+            //meshData.Clear();
             hexMesh.Clear();
             vertices.Clear();
             triangles.Clear();
@@ -78,11 +78,11 @@ namespace HexMapTool
                 }
             }
 
-            meshData.UpdateMesh(vertices, triangles, colors);
-            
-            hexMesh.vertices = meshData.GetVertices().ToArray();
-            hexMesh.triangles = meshData.GetTriangles().ToArray();
-            hexMesh.colors = meshData.GetColors().ToArray();
+            //meshData.UpdateMesh(vertices, triangles, colors);
+
+            hexMesh.vertices = vertices.ToArray();
+            hexMesh.triangles = triangles.ToArray();
+            hexMesh.colors = colors.ToArray();
             //Debug.Log(hexMesh.vertices.Length);
             // hexMesh.RecalculateBounds();
             //hexMesh.RecalculateNormals();

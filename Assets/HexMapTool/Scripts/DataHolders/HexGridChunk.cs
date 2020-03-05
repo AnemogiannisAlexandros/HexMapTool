@@ -35,5 +35,9 @@ namespace HexMapTool
         public void AddCell (int index, HexCell cell) {
 		cells[index] = cell;
 	    }
+        public void SetCells(HexCell[] cells) 
+        {
+            this.cells = cells;
+        }
     }
 }

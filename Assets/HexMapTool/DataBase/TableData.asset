@@ -13,7 +13,47 @@ MonoBehaviour:
   m_Name: TableData
   m_EditorClassIdentifier: 
   chosenColors:
-  - archetypeName: SomeName
-    color: {r: 1, g: 1, b: 1, a: 1}
+  - archetypeName: Do Damage
+    color: {r: 0.7, g: 0.31, b: 0.3, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Heal
+    color: {r: 0.515, g: 1, b: 0.131, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Quest
+    color: {r: 1, g: 0.95, b: 0.155, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Dialogue
+    color: {r: 0.731, g: 1, b: 0.992, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: City
+    color: {r: 0.641, g: 0.641, b: 0.641, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Vendor
+    color: {r: 0.425, g: 0.606, b: 0.99, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: AMBUSH!
+    color: {r: 1, g: 0.156, b: 0, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Treasure
+    color: {r: 0.82, g: 0.401, b: 0.181, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Secret
+    color: {r: 0.834, g: 0.291, b: 0.981, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Teleport
+    color: {r: 0.99, g: 0.658, b: 0.22, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Difficult Terrain
+    color: {r: 0.962, g: 0.925, b: 0.658, a: 1}
     colorJob: {fileID: 0}
     jobData: {fileID: 0}

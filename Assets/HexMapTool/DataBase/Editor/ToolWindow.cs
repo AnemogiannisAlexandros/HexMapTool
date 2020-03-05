@@ -37,15 +37,6 @@ namespace HexMapTool
             }
 
         }
-        private void OnFocus()
-        {
-            if (myToolData == null)
-            {
-                myToolData = CreateInstance<ToolData>();
-                myToolData.Init();
-                canRun = true;
-            }
-        }
         //Tool OnGui
         public void OnGUI()
         {
