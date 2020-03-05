@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10de5b04a93a14a4ca1324fa8bb78fa2, type: 3}
   m_Name: MeshData
   m_EditorClassIdentifier: 
-  vertices: []
-  triangles: 
-  colors: []
+  chunkMeshes: []
+  chunkSizeX: 0
+  chunkSizeZ: 0

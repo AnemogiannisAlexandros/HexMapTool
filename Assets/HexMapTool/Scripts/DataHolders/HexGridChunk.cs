@@ -25,6 +25,14 @@ namespace HexMapTool
         {
             return hexMesh;
         }
+        public void SetMesh(HexMesh hexMesh) 
+        {
+            this.hexMesh = hexMesh;
+        }
+        public void SetCells(HexCell[] cells)
+        {
+            this.cells = cells;
+        }
         public void Init()
         {
             hexChunkObj = new GameObject("HexChunk");
@@ -32,12 +40,16 @@ namespace HexMapTool
             hexChunkObj.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
             cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
         }
+        public void InitWithData(HexMesh mesh) 
+        {
+            hexChunkObj = new GameObject("HexChunk");
+            hexMesh = mesh;
+            hexChunkObj.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
+            cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
+        }
         public void AddCell (int index, HexCell cell) {
 		cells[index] = cell;
 	    }
-        public void SetCells(HexCell[] cells) 
-        {
-            this.cells = cells;
-        }
+
     }
 }

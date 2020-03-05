@@ -10,16 +10,27 @@ namespace HexMapTool
     /// <summary>
     /// Mesh of a Hexagon Map
     /// </summary>
+    
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 	public class HexMesh : MonoBehaviour
 	{
         private Mesh hexMesh;
+        [HideInInspector]
         private List<Vector3> vertices;
+        [HideInInspector]
         private List<int> triangles;
+        [HideInInspector]
         private List<Color> colors;
         private MeshCollider meshCollider;
 
-        private MeshData meshData;
+        public HexMesh() 
+        {
+
+        }
+        public HexMesh(HexMesh mesh) 
+        {
+            this.hexMesh = mesh.hexMesh;
+        }
         //Create a mesh
         public void Init()
 		{
@@ -29,11 +40,10 @@ namespace HexMapTool
             vertices = new List<Vector3>();
 			triangles = new List<int>();
             colors =  new List<Color>();
-            meshData = ToolData.Instance.MeshDataObj;
         }
-        public MeshData GetMeshData()
+        public void InitWithData() 
         {
-            return meshData;
+            Debug.Log("Inniting");
         }
         public void ClearMesh() 
         {
@@ -50,16 +60,12 @@ namespace HexMapTool
         //Clear any mesh Data
         //Calculate Mesh from cell Data
         //assing collider
-        public void TriangulateWithData()
+        public void TriangulateWithData(int chunkIndex)
         {
-            
-            //meshData.UpdateMesh(vertices, triangles, colors);
-            hexMesh.vertices = meshData.GetVertices().ToArray();
-            hexMesh.triangles = meshData.GetTriangles().ToArray();
-            hexMesh.colors = meshData.GetColors().ToArray();
-            //Debug.Log(hexMesh.vertices.Length);
-            // hexMesh.RecalculateBounds();
-            //hexMesh.RecalculateNormals();
+
+            hexMesh.vertices = ToolData.Instance.MeshDataObj.GetChunkMeshes()[chunkIndex].vertices.ToArray();
+            hexMesh.triangles = ToolData.Instance.MeshDataObj.GetChunkMeshes()[chunkIndex].triangles.ToArray();
+            hexMesh.colors = ToolData.Instance.MeshDataObj.GetChunkMeshes()[chunkIndex].colors.ToArray();
             if (meshCollider == null)
             {
                 meshCollider = gameObject.AddComponent<MeshCollider>();

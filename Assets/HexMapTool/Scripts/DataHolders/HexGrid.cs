@@ -96,7 +96,6 @@ namespace HexMapTool
 				    CreateCell(x, z, i++);
 			    }   
 		    }
-            ToolData.Instance.MeshDataObj.SetSize(new Vector2Int(cellCountX, cellCountZ));
             ToolData.Instance.MeshDataObj.SetCells(cells);
         }
         public void CreateGridWithChunks() 
@@ -106,6 +105,7 @@ namespace HexMapTool
                 hexGrid = new GameObject("HexGrid");
                 defaultColor = Color.white;
             }
+            ToolData.Instance.MeshDataObj.SetChunks(new Vector2Int(chunkCountX, chunkCountZ));
             for (int i = 0; i < chunkCountX; i++) 
             {
                 for (int j = 0; j < chunkCountZ; j++) 
@@ -127,6 +127,40 @@ namespace HexMapTool
                     chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
                 }
                 chunk.GetMesh().Triangulate(chunk.GetCells());
+                ToolData.Instance.MeshDataObj.GetChunkMeshes().Add(chunk.GetMesh());
+                itterations++;
+            }
+        }
+        public void LoadGrid()
+        {
+            if (hexGrid == null)
+            {
+                hexGrid = new GameObject("Hex Grid");
+                defaultColor = Color.white;
+            }
+            int loadedChunkX = ToolData.Instance.MeshDataObj.GetChunkSize().x;
+            int loadedChunkZ = ToolData.Instance.MeshDataObj.GetChunkSize().y;
+            for (int i = 0; i < loadedChunkX; i++)
+            {
+                for (int j = 0; j < loadedChunkZ; j++)
+                {
+                    Debug.Log("Number of Chunks : " + (j + (i) * chunkCountZ));
+                    chunks[j + (i) * chunkCountZ] = new HexGridChunk();
+                    chunks[j + (i) * chunkCountZ].Init();
+                    chunks[j + (i) * chunkCountZ].GetChunk().transform.SetParent(hexGrid.transform);
+                }
+            }
+            cells = ToolData.Instance.MeshDataObj.GetCells();
+            int itterations = 0;
+            foreach (HexGridChunk chunk in chunks) 
+            {
+                chunk.SetMesh(ToolData.Instance.MeshDataObj.GetChunkMeshes()[itterations]);
+                Debug.Log(chunk.GetMesh().ToString());
+                for (int i = 0; i < HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ; i++)
+                {
+                    chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
+                }
+                //chunk.GetMesh().InitWithData();
                 itterations++;
             }
         }
@@ -147,19 +181,7 @@ namespace HexMapTool
             CreateCells();
             hexMesh.Triangulate(cells);
         }
-        public void LoadGrid()
-        {
-            if (hexGrid == null)
-            {
-                hexGrid = new GameObject("Hex Grid");
-                hexMesh = hexGrid.AddComponent<HexMesh>();
-                hexGrid.GetComponent<MeshRenderer>().material = (Material)AssetDatabase.LoadAssetAtPath("Assets/HexMapTool/Materials/HexMaterial.mat", typeof(Material));
-                defaultColor = Color.white;
-            }
-            hexMesh.Init();
-            cells = ToolData.Instance.MeshDataObj.GetCells();
-            hexMesh.TriangulateWithData();
-        }
+       
 
         public void DestroyGrid()
         {
@@ -189,6 +211,7 @@ namespace HexMapTool
         public void RefreshChunk(int index) 
         {
             chunks[index].GetMesh().Triangulate(chunks[index].GetCells());
+            ToolData.Instance.MeshDataObj.GetChunkMeshes()[index] = chunks[index].GetMesh();
             Debug.Log("Running");
 
             //if (index > 0 && index < chunks.Length-1)
@@ -370,6 +393,8 @@ namespace HexMapTool
                 {
                     // Debug.Log("Deleting Map");
                     DestroyGrid();
+                    ToolData.Instance.MeshDataObj.Clear();
+
                 }
             }
             EditorGUILayout.EndVertical();

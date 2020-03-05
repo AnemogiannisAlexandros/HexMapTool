@@ -31,7 +31,7 @@
 //        Vector3 pos = (target as HexMesh).transform.position;
 //        serializedObject.ApplyModifiedProperties();
 
-        
+
 //        if (EditorGUI.EndChangeCheck())
 //        {
 //            Debug.Log("Runnign");
@@ -41,9 +41,9 @@
 //    {
 //        EditorGUI.BeginChangeCheck();
 
-//        //serializedObject.Update();
+//        serializedObject.Update();
 //        Vector3 pos = (target as HexMesh).transform.position;
-//        //serializedObject.ApplyModifiedProperties();
+//        serializedObject.ApplyModifiedProperties();
 
 
 //        if (EditorGUI.EndChangeCheck())
