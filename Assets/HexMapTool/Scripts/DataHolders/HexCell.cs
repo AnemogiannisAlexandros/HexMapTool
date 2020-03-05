@@ -33,12 +33,17 @@ namespace HexMapTool
     /// <summary>
     /// What data a "HexCell" must Hold for itself
     /// </summary>
+    [System.Serializable]
     public class HexCell
     {
         HexCell[] neighbors;
+        [SerializeField]
         private Vector3 worldCoordinates;
+        [SerializeField]
         private HexCoordinates coordinates;
+        [SerializeField]
         private Color cellColor;
+        [SerializeField]
         private int elevation;
          
         //Constructor

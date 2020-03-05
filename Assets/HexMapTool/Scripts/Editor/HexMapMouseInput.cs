@@ -24,7 +24,7 @@ namespace HexMapTool
                     {
                         if (e.keyCode == KeyCode.Space)
                         {
-                           Debug.Log("Working");
+                           //Debug.Log("Working");
                             HandleInput();
                         }
                         break;
@@ -59,7 +59,7 @@ namespace HexMapTool
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-                Debug.Log("touched at Vector3 : " + hit.point);
+                //Debug.Log("touched at Vector3 : " + hit.point);
                 HexCoordinates coordinates = HexCoordinates.FromPosition(hit.point);
                // Debug.Log("touched at HexCoordinates " + coordinates.ToString());
                 HexGrid grid =  ToolData.Instance.Grid;

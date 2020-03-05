@@ -110,24 +110,22 @@ namespace HexMapTool
             {
                 for (int j = 0; j < chunkCountZ; j++) 
                 {
-                    Debug.Log("Number of Chunks : " + ( j + (i) * chunkCountZ));
+                    //Debug.Log("Number of Chunks : " + ( j + (i) * chunkCountZ));
                     chunks[j + (i) * chunkCountZ] = new HexGridChunk();
                     chunks[j + (i) * chunkCountZ].Init();
-                    chunks[j + (i) * chunkCountZ].GetChunk().transform.SetParent(hexGrid.transform);
-                    chunks[j + (i) * chunkCountZ].GetMesh().Init();
                 }
             }
             CreateCells();
             int itterations = 0;
-
             foreach (HexGridChunk chunk in chunks)
             {
+                chunk.GetChunk().transform.SetParent(hexGrid.transform);
+                chunk.GetMesh().Init();
                 for (int i = 0; i < HexMetrics.chunkSizeX*HexMetrics.chunkSizeZ; i++) 
                 {
                     chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
                 }
-                chunk.GetMesh().Triangulate(chunk.GetCells());
-                ToolData.Instance.MeshDataObj.GetChunkMeshes().Add(chunk.GetMesh());
+                chunk.GetMesh().Triangulate(chunk.GetCells(),itterations);
                 itterations++;
             }
         }
@@ -144,23 +142,23 @@ namespace HexMapTool
             {
                 for (int j = 0; j < loadedChunkZ; j++)
                 {
-                    Debug.Log("Number of Chunks : " + (j + (i) * chunkCountZ));
+                    //Debug.Log("Number of Chunks : " + (j + (i) * chunkCountZ));
                     chunks[j + (i) * chunkCountZ] = new HexGridChunk();
-                    chunks[j + (i) * chunkCountZ].Init();
-                    chunks[j + (i) * chunkCountZ].GetChunk().transform.SetParent(hexGrid.transform);
                 }
             }
             cells = ToolData.Instance.MeshDataObj.GetCells();
             int itterations = 0;
             foreach (HexGridChunk chunk in chunks) 
             {
-                chunk.SetMesh(ToolData.Instance.MeshDataObj.GetChunkMeshes()[itterations]);
-                Debug.Log(chunk.GetMesh().ToString());
+                chunk.InitWithData(ToolData.Instance.MeshDataObj.GetChunks()[itterations].GetVerts(),
+                    ToolData.Instance.MeshDataObj.GetChunks()[itterations].GetTriangles(),
+                    ToolData.Instance.MeshDataObj.GetChunks()[itterations].GetColors());
+                chunk.GetChunk().transform.SetParent(hexGrid.transform);
                 for (int i = 0; i < HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ; i++)
                 {
                     chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
                 }
-                //chunk.GetMesh().InitWithData();
+                chunk.GetMesh().TriangulateWithData(itterations);
                 itterations++;
             }
         }
@@ -179,7 +177,7 @@ namespace HexMapTool
             //cells = new HexCell[cellCountX * cellCountZ];
             //coordinates = new Vector3[height * width];
             CreateCells();
-            hexMesh.Triangulate(cells);
+            //hexMesh.Triangulate(cells);
         }
        
 
@@ -202,17 +200,17 @@ namespace HexMapTool
             cell.SetColor(touchedColor);
             //hexMesh.Triangulate(cells);
             index = Mathf.FloorToInt(index / (HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ));
-            chunks[index].GetMesh().Triangulate(chunks[index].GetCells());
+            chunks[index].GetMesh().Triangulate(chunks[index].GetCells(),index);
         }
         public void Refresh() 
         {
-            hexMesh.Triangulate(cells);
+           // hexMesh.Triangulate(cells);
         }
         public void RefreshChunk(int index) 
         {
-            chunks[index].GetMesh().Triangulate(chunks[index].GetCells());
-            ToolData.Instance.MeshDataObj.GetChunkMeshes()[index] = chunks[index].GetMesh();
-            Debug.Log("Running");
+            chunks[index].GetMesh().Triangulate(chunks[index].GetCells(),index);
+            ToolData.Instance.MeshDataObj.GetChunks()[index].SetMesh(chunks[index].GetMesh());
+           // Debug.Log("Running");
 
             //if (index > 0 && index < chunks.Length-1)
             //{
@@ -261,7 +259,7 @@ namespace HexMapTool
             cell.SetElevation(activeElevation);
             index = Mathf.FloorToInt(index / (HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ));
             RefreshChunk(index);
-            Debug.Log("Editing Chunk " + index);
+            //Debug.Log("Editing Chunk " + index);
             RefreshNeighbours(cell);
         }
         private void CreateCell(int x, int z, int i)

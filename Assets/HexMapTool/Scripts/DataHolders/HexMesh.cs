@@ -41,9 +41,13 @@ namespace HexMapTool
 			triangles = new List<int>();
             colors =  new List<Color>();
         }
-        public void InitWithData() 
+        public void InitWithData(List<Vector3> verts,List<int> tris, List<Color>colors) 
         {
-            Debug.Log("Inniting");
+            hexMesh = new Mesh();
+            GetComponent<MeshFilter>().sharedMesh = hexMesh;
+            vertices = verts;
+            triangles = tris;
+            this.colors = colors;
         }
         public void ClearMesh() 
         {
@@ -63,16 +67,16 @@ namespace HexMapTool
         public void TriangulateWithData(int chunkIndex)
         {
 
-            hexMesh.vertices = ToolData.Instance.MeshDataObj.GetChunkMeshes()[chunkIndex].vertices.ToArray();
-            hexMesh.triangles = ToolData.Instance.MeshDataObj.GetChunkMeshes()[chunkIndex].triangles.ToArray();
-            hexMesh.colors = ToolData.Instance.MeshDataObj.GetChunkMeshes()[chunkIndex].colors.ToArray();
+            hexMesh.vertices = ToolData.Instance.MeshDataObj.GetChunks()[chunkIndex].GetVerts().ToArray();
+            hexMesh.triangles = ToolData.Instance.MeshDataObj.GetChunks()[chunkIndex].GetTriangles().ToArray();
+            hexMesh.colors = ToolData.Instance.MeshDataObj.GetChunks()[chunkIndex].GetColors().ToArray();
             if (meshCollider == null)
             {
                 meshCollider = gameObject.AddComponent<MeshCollider>();
             }
             meshCollider.sharedMesh = hexMesh;
         }
-		public void Triangulate(HexCell[] coords)
+		public void Triangulate(HexCell[] coords,int chunkIndex)
 		{
            
             ClearMesh();
@@ -84,7 +88,7 @@ namespace HexMapTool
                 }
             }
 
-            //meshData.UpdateMesh(vertices, triangles, colors);
+            ToolData.Instance.MeshDataObj.GetChunks()[chunkIndex].UpdateChunkData(coords, vertices, triangles, colors);
 
             hexMesh.vertices = vertices.ToArray();
             hexMesh.triangles = triangles.ToArray();

@@ -8,7 +8,7 @@ namespace HexMapTool
     public class MeshData : ScriptableObject
     {
         [SerializeField]
-        List<HexMesh> chunkMeshes;
+        List<HexGridChunk> chunks;
         [SerializeField]
         private HexCell[] cells;
         [SerializeField]
@@ -16,22 +16,22 @@ namespace HexMapTool
 
         public MeshData()
         {
-            this.chunkMeshes = new List<HexMesh>();
+            this.chunks = new List<HexGridChunk>();
         }
-        public MeshData(List<HexMesh> chunkMeshes)
+        public MeshData(List<HexGridChunk> chunks)
         {
-            this.chunkMeshes = chunkMeshes;
+            this.chunks = chunks;
         }
-        public MeshData(List<HexMesh> chunkMeshes, HexCell[] cells, int chunkSizeX, int chunkSizeZ)
+        public MeshData(List<HexGridChunk> chunks, HexCell[] cells, int chunkSizeX, int chunkSizeZ)
         {
-            this.chunkMeshes = chunkMeshes;
+            this.chunks = chunks;
             this.cells = cells;
             this.chunkSizeX = chunkSizeX;
             this.chunkSizeZ = chunkSizeZ;
         }
-        public List<HexMesh> GetChunkMeshes()
+        public List<HexGridChunk> GetChunks()
         {
-            return this.chunkMeshes;
+            return this.chunks;
         }
         public HexCell[] GetCells() 
         {
@@ -45,9 +45,9 @@ namespace HexMapTool
         {
             this.cells = cells;
         }
-        public void SetChunkMeshes(List<HexMesh> chunkMeshes) 
+        public void SetChunks(List<HexGridChunk> chunks) 
         {
-            this.chunkMeshes = chunkMeshes;
+            this.chunks = chunks;
         }
         public void SetChunks(Vector2Int chunkSize) 
         {
@@ -56,7 +56,7 @@ namespace HexMapTool
         }
         public void Clear()
         {
-            chunkMeshes = new List<HexMesh>();
+            chunks = new List<HexGridChunk>();
             cells = new HexCell[0];
             chunkSizeX = 0;
             chunkSizeZ = 0;
