@@ -194,6 +194,10 @@ namespace HexMapTool
                 {
                     ToolData.Load(ToolData.Instance.Table);
                 }
+                if (GUILayout.Button("Save Collection"))
+                {
+                    ToolData.Save(ToolData.Instance.Table);
+                }
                 reorderableList.DoLayoutList();
             }
             so.ApplyModifiedProperties();

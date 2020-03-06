@@ -65,9 +65,17 @@ namespace HexMapTool
                 new ColorArchetype("AMBUSH!",new Color(1f,0.156f,0f,1f)), new ColorArchetype("Treasure",new Color(0.820f,0.401f,0.181f,1f)),
                 new ColorArchetype("Secret", new Color(0.834f,0.291f,0.981f,1f)),new ColorArchetype("Teleport", new Color(0.990f,0.658f,0.22f,1f)),
                 new ColorArchetype("Difficult Terrain",new Color(0.962f,0.925f,0.658f,1f)));
+                ColorTable preset04 = new ColorTable("TerrainTemplate", new ColorArchetype("Deep Sea", new Color(0.1033f, 0.2333f, 0.8113f, 1.0f)), new ColorArchetype("Light Sea", new Color(0.0317f, 0.7895f, 0.9622f, 1f)),
+                new ColorArchetype("Sand", new Color(0.8584f, .8012f, .5709f, 1f)), new ColorArchetype("Light Green", new Color(0.6458f, 1f, 0.4198f, 1f)),
+                new ColorArchetype("Deep Green", new Color(0.0942f, 0.7830f, 0.0849f, 1f)), new ColorArchetype("Deeper Green", new Color(0.2114f, 0.4811f, 0.1339f, 1f)),
+                new ColorArchetype("Light Mountain", new Color(.7547f, 0.5588f, 2669f, 1f)), new ColorArchetype("Mountain", new Color(0.820f, 0.401f, 0.181f, 1f)),
+                new ColorArchetype("High Mountain", new Color(0.4433f, 0.2185f, 0.1150f, 1f)), new ColorArchetype("Rock", new Color(0.45f, 0.45f, 0.45f, 1f)),
+                new ColorArchetype("Difficult Terrain", new Color(1f, 1f, 1f, 1f)));
                 DirectSave(preset01.GetTableName(), preset01);
                 DirectSave(preset02.GetTableName(), preset02);
                 DirectSave(preset03.GetTableName(), preset03);
+                DirectSave(preset04.GetTableName(), preset04);
+
             }
             if (!Directory.Exists(Application.persistentDataPath + "/MeshDataSaves"))
             {
@@ -210,6 +218,53 @@ namespace HexMapTool
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(file, data);
             file.Close();
+        }
+        public static void DirectLoad(ScriptableObject serializeable, string fileName, string extention)
+        {
+            FileStream file;
+            string path;
+            switch (serializeable)
+            {
+                case HexGrid gr:
+                    {
+                        path = Application.persistentDataPath + "/GridSaves/";
+                        break;
+                    }
+                case ColorTable tb:
+                    {
+                        path = Application.persistentDataPath + "/ColorTableSaves/";
+                        break;
+                    }
+                case MeshData md:
+                    {
+                        path = Application.persistentDataPath + "/MeshDataSaves/";
+                        break;
+                    }
+                default:
+                    {
+                        path = Application.persistentDataPath;
+                        break;
+                    }
+
+            }
+            string destination = path + fileName + extention;
+            //destination = Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat"; 
+            if (File.Exists(destination))
+            {
+                file = File.OpenRead(destination);
+            }
+            else
+            {
+                Debug.LogError("File not found");
+                return;
+            }
+
+            BinaryFormatter bf = new BinaryFormatter();
+            string data = (string)bf.Deserialize(file);
+            file.Close();
+            string json = data;
+            //Debug.Log(json); 
+            JsonUtility.FromJsonOverwrite(json, serializeable);
         }
         //Loads Data of type ScriptableObject from  a file created at  Application.persistentDataPath + "/" + serializeable.GetType().ToString() + ".dat";
         public static void Load(ScriptableObject serializeable) 

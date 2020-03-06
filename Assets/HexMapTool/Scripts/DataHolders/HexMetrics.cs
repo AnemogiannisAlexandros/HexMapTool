@@ -51,7 +51,7 @@ namespace HexMapTool
         public static Texture2D noiseSource;
 
 
-        public const float elevationStep = 1f;
+        public const float elevationStep = 3f;
 
         public const float solidFactor = 0.8f;
 
