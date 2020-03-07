@@ -13,7 +13,47 @@ MonoBehaviour:
   m_Name: TableData
   m_EditorClassIdentifier: 
   chosenColors:
-  - archetypeName: SomeName
+  - archetypeName: Deep Sea
+    color: {r: 0.1033, g: 0.2333, b: 0.8113, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Light Sea
+    color: {r: 0.0317, g: 0.7895, b: 0.9622, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Sand
+    color: {r: 0.8584, g: 0.8012, b: 0.5709, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Light Green
+    color: {r: 0.6458, g: 1, b: 0.4198, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Deep Green
+    color: {r: 0.0942, g: 0.783, b: 0.0849, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Deeper Green
+    color: {r: 0.2114, g: 0.4811, b: 0.1339, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Light Mountain
+    color: {r: 0.7547, g: 0.5588, b: 2669, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Mountain
+    color: {r: 0.82, g: 0.401, b: 0.181, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: High Mountain
+    color: {r: 0.4433, g: 0.2185, b: 0.115, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Rock
+    color: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+    colorJob: {fileID: 0}
+    jobData: {fileID: 0}
+  - archetypeName: Difficult Terrain
     color: {r: 1, g: 1, b: 1, a: 1}
     colorJob: {fileID: 0}
     jobData: {fileID: 0}

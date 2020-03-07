@@ -9,7 +9,7 @@ namespace HexMapTool
         private Vector2 scrollPos;
         private ToolData myToolData;
         private bool canRun = false;
-        [MenuItem("Window/HexTool")]
+        [MenuItem("Window/HexTool %#F1")]
         static void InitTool()
         {
             ToolWindow window = (ToolWindow)EditorWindow.GetWindow(typeof(ToolWindow));
@@ -42,7 +42,6 @@ namespace HexMapTool
         {
             if (canRun)
             {
-
                 myToolData.OnGui();
                 GuiLine();
                 myToolData.Grid.OnGui();

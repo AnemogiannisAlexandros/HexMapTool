@@ -23,6 +23,7 @@ namespace HexMapTool
         public MeshData MeshDataObj;
         string destination;
 
+
         private void Awake()
         {
             if (m_toolData == null)
@@ -35,12 +36,52 @@ namespace HexMapTool
             }
         }
 
+
         //Tool Gui. Implements the Gui of HexGrid And Color Table
-        public void OnGui() 
+        private bool isReloading = false;
+        public void OnGui()
         {
+            Event e = Event.current;
+            if (e.type == EventType.KeyDown)
+            {
+
+                if (e.shift && e.control && e.keyCode == KeyCode.R && !isReloading)
+                {
+                    Grid.CreateGridWithChunks(true, false);
+                    isReloading = true;
+                }
+                else if (e.shift && e.keyCode == KeyCode.R && !isReloading)
+                {
+                    Grid.CreateGridWithChunks(true, true);
+                    isReloading = true;
+                }
+                else if (e.shift && e.keyCode == KeyCode.C)
+                {
+                    Grid.ClearMap();
+                }
+                else if (e.shift && e.control && e.keyCode == KeyCode.C)
+                {
+                    Clear();
+                }
+
+            }
+            if (e.type == EventType.KeyUp)
+            {
+                if (e.keyCode == KeyCode.R && isReloading)
+                {
+                    Debug.Log("Can Reload");
+                    isReloading = false;
+                }
+            }
             show = EditorGUILayout.Foldout(show, "Tool Functions", true);
             if (show)
             {
+                GUILayout.Label("Keybind CheetSheet", EditorStyles.boldLabel);
+                GUILayout.Label("LeftShift + R : Generate Map with Random Seed\n" +
+                    "LeftShift + LeftControll + R : Generate Map With Displayed Seed : " + Grid.GetSeed() + "\n" +
+                    "LeftShift + C : Clear Map\n" +
+                    "LeftShift + LeftControll + C : Clear All Tool Data");
+
                 if (GUILayout.Button("Clear All"))
                 {
                     Clear();
@@ -212,7 +253,6 @@ namespace HexMapTool
             {
                 file = File.Create(path);
                 File.SetAttributes(path, FileAttributes.Normal);
-
             }
             string data = json;
             BinaryFormatter bf = new BinaryFormatter();

@@ -18,38 +18,19 @@ namespace HexMapTool
 
             HexMesh script = (HexMesh)target;
             Event e = Event.current;
+
             switch (e.type)
             {
                 case EventType.KeyDown:
                     {
+
+
                         if (e.keyCode == KeyCode.Space)
                         {
-                           //Debug.Log("Working");
                             HandleInput();
                         }
                         break;
                     }
-                //case EventType.MouseDrag:
-                //    {
-                //        if (e.keyCode == KeyCode.Mouse0)
-                //        {
-                //            Debug.Log("Working");
-                //            HandleInput();
-                //            SceneView.RepaintAll();
-                //        }
-                //    }
-                //    break;
-                //case EventType.Layout:
-                //    if (e.keyCode == KeyCode.Mouse0)
-                //    {
-                //        Debug.Log("Working");
-                //        HandleInput();
-                //        SceneView.RepaintAll();
-                //    }
-                //    HandleUtility.AddDefaultControl(0);
-
-                   
-                //    break;
             }
         }
         void HandleInput()

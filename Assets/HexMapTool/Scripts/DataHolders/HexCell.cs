@@ -36,6 +36,7 @@ namespace HexMapTool
     [System.Serializable]
     public class HexCell
     {
+        [System.NonSerialized]
         HexCell[] neighbors;
         [SerializeField]
         private Vector3 worldCoordinates;

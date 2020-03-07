@@ -44,6 +44,18 @@ namespace HexMapTool
 
         HexMesh hexMesh;
 
+        public int GetSeed()
+        {
+            return seed;
+        }
+        public void SetSeed(int seed)
+        {
+            this.seed = seed;
+        }
+        public int GenerateSeed()
+        {
+            return Random.Range(1, 150);
+        }
         public void SetCells(HexCell[] value) 
         {
             cells = value;
@@ -81,65 +93,97 @@ namespace HexMapTool
             cellCountX = chunkCountX * HexMetrics.chunkSizeX;
             cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
         }
-        void CreateRandomCells()
-        {
-            cells = new HexCell[cellCountZ * cellCountX];
+        //void CreateRandomCells()
+        //{
+        //    cells = new HexCell[cellCountZ * cellCountX];
 
-            for (int z = 0, i = 0; z < cellCountZ; z++)
-            {
-                for (int x = 0; x < cellCountX; x++)
-                {
-                    CreateRandomCell(x, z, i++);
-                }
-            }
-            ToolData.Instance.MeshDataObj.SetCells(cells);
-        }
-        void CreateCells ()
+        //    for (int z = 0, i = 0; z < cellCountZ; z++)
+        //    {
+        //        for (int x = 0; x < cellCountX; x++)
+        //        {
+        //            CreateRandomCell(x, z, i++);
+        //        }
+        //    }
+        //    ToolData.Instance.MeshDataObj.SetCells(cells);
+        //}
+        void CreateCells (bool isRandom,bool randomSeed = false)
         {
 		    cells = new HexCell[cellCountZ * cellCountX];
-
-		    for (int z = 0, i = 0; z < cellCountZ; z++)
+            if (!isRandom)
             {
-			    for (int x = 0; x < cellCountX; x++)
+                for (int z = 0, i = 0; z < cellCountZ; z++)
                 {
-				    CreateCell(x, z, i++);
-			    }   
-		    }
+                    for (int x = 0; x < cellCountX; x++)
+                    {
+                        CreateCell(x, z, i++);
+                    }
+                }
+            }
+            else
+            {
+                int seedToUse;
+                if (randomSeed)
+                {
+                    seedToUse = GenerateSeed();
+                }
+                else
+                {
+                    seedToUse = seed;
+                }
+                for (int z = 0, i = 0; z < cellCountZ; z++)
+                {
+                    for (int x = 0; x < cellCountX; x++)
+                    {
+                        CreateRandomCell(x, z, i++, seedToUse);
+                    }
+                }
+            }
+
             ToolData.Instance.MeshDataObj.SetCells(cells);
         }
-        public void CreateGridWithChunksRandom()
+        //public void CreateGridWithChunksRandom(bool isRandom)
+        //{
+        //    ClearMap();
+        //    if (hexGrid == null)
+        //    {
+        //        hexGrid = new GameObject("HexGrid");
+        //        defaultColor = Color.white;
+        //    }
+        //    ToolData.Instance.MeshDataObj.SetChunks(new Vector2Int(chunkCountX, chunkCountZ));
+        //    for (int i = 0; i < chunkCountX; i++)
+        //    {
+        //        for (int j = 0; j < chunkCountZ; j++)
+        //        {
+        //            //Debug.Log("Number of Chunks : " + ( j + (i) * chunkCountZ));
+        //            chunks[j + (i) * chunkCountZ] = new HexGridChunk();
+        //            chunks[j + (i) * chunkCountZ].Init();
+        //        }
+        //    }
+        //    CreateCells(isRandom);
+        //    int itterations = 0;
+        //    foreach (HexGridChunk chunk in chunks)
+        //    {
+        //        chunk.GetChunk().transform.SetParent(hexGrid.transform);
+        //        chunk.GetMesh().Init();
+        //        for (int i = 0; i < HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ; i++)
+        //        {
+        //            chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
+        //        }
+        //        chunk.GetMesh().Triangulate(chunk.GetCells(), itterations);
+        //        itterations++;
+        //    }
+        //}
+        public void CreateGridWithChunks(bool isRandom, bool randomSeed = false) 
         {
-            if (hexGrid == null)
+            ClearMap();
+            Init();
+            if (isRandom)
             {
-                hexGrid = new GameObject("HexGrid");
-                defaultColor = Color.white;
-            }
-            ToolData.Instance.MeshDataObj.SetChunks(new Vector2Int(chunkCountX, chunkCountZ));
-            for (int i = 0; i < chunkCountX; i++)
-            {
-                for (int j = 0; j < chunkCountZ; j++)
+                if (ToolData.Instance.Table.GetTableName() != "TerrainTemplate")
                 {
-                    //Debug.Log("Number of Chunks : " + ( j + (i) * chunkCountZ));
-                    chunks[j + (i) * chunkCountZ] = new HexGridChunk();
-                    chunks[j + (i) * chunkCountZ].Init();
+                    ToolData.DirectLoad(ToolData.Instance.Table, "TerrainTemplate", ".dat");
                 }
             }
-            CreateRandomCells();
-            int itterations = 0;
-            foreach (HexGridChunk chunk in chunks)
-            {
-                chunk.GetChunk().transform.SetParent(hexGrid.transform);
-                chunk.GetMesh().Init();
-                for (int i = 0; i < HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ; i++)
-                {
-                    chunk.AddCell(i, cells[i + itterations * HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ]);
-                }
-                chunk.GetMesh().Triangulate(chunk.GetCells(), itterations);
-                itterations++;
-            }
-        }
-        public void CreateGridWithChunks() 
-        {
             if (hexGrid == null) 
             {
                 hexGrid = new GameObject("HexGrid");
@@ -155,7 +199,7 @@ namespace HexMapTool
                     chunks[j + (i) * chunkCountZ].Init();
                 }
             }
-            CreateCells();
+            CreateCells(isRandom, randomSeed);
             int itterations = 0;
             foreach (HexGridChunk chunk in chunks)
             {
@@ -216,7 +260,7 @@ namespace HexMapTool
             hexMesh.Init();
             //cells = new HexCell[cellCountX * cellCountZ];
             //coordinates = new Vector3[height * width];
-            CreateCells();
+            //CreateCells();
             //hexMesh.Triangulate(cells);
         }
        
@@ -299,12 +343,12 @@ namespace HexMapTool
             cells[i] = cell;
 
         }
-        private void CreateRandomCell(int x, int z, int i)
+        private void CreateRandomCell(int x, int z, int i,int seedToUse)
         {
             Vector3 position;
             position.x = (x + z * 0.5f - z / 2) * (HexMetrics.GetInnerRadius()) * 2f;
             position.z = z * (HexMetrics.GetOutterRadius()) * 1.5f;
-            float h = Mathf.PerlinNoise(position.x/(x+1+seed), position.z/ (z + 1 + seed)) *10;
+            float h = Mathf.PerlinNoise(position.x/(x+1+ seedToUse), position.z/ (z + 1 + seedToUse)) *10;
             position.y = 0;
             // coordinates[i] = position;
             //GameObject obj = Instantiate(cellPrefab);
@@ -361,7 +405,6 @@ namespace HexMapTool
             show = EditorGUILayout.Foldout(show, "Hex Map Generator", true);
 
             exists = ToolData.Instance.Table.GetTable().Count > 0 ? true : false;
-
             //grid = (HexGrid)EditorGUILayout.ObjectField(grid, typeof(HexGrid), true);
             if (show)
             {
@@ -375,7 +418,10 @@ namespace HexMapTool
                     }
                     if (selectionIndex < cardNames.Count)
                     {
-                        selectionIndex = EditorGUILayout.Popup(selectionIndex, cardNames.ToArray());
+                        EditorStyles.popup.fontSize = 10;
+                        EditorStyles.popup.fixedHeight = 20;
+                        selectionIndex = EditorGUILayout.Popup(selectionIndex, cardNames.ToArray(),GUILayout.Height(EditorStyles.popup.fixedHeight));
+
                     }
                     else 
                     {
@@ -403,18 +449,15 @@ namespace HexMapTool
                 seed = EditorGUILayout.IntField("Random Seed : ", seed);
                 if (GUILayout.Button("Generate Map"))
                 {
-                    Init();
-                    // Debug.Log("Generating Map");
-                    //CreateGrid();
-                    CreateGridWithChunks();
+                    CreateGridWithChunks(false);
                 }
                 if (GUILayout.Button("Generate Random Map"))
                 {
-                    Init();
-                    // Debug.Log("Generating Map");
-                    //CreateGrid();
-                    ToolData.DirectLoad(ToolData.Instance.Table, "TerrainTemplate", ".dat");
-                    CreateGridWithChunksRandom();
+                    CreateGridWithChunks(true);
+                }
+                if (GUILayout.Button("Generate Random Map With Random Seed"))
+                {
+                    CreateGridWithChunks(true,true);
                 }
                 if (GUILayout.Button("Save map"))
                 {
@@ -436,15 +479,17 @@ namespace HexMapTool
                 if (GUILayout.Button("Clear Map"))
                 {
                     // Debug.Log("Deleting Map");
-                    DestroyGrid();
-                    ToolData.Instance.MeshDataObj.Clear();
-
+                    ClearMap();
                 }
             }
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
             //EditorUtility.SetDirty(this);
         }
-
+        public void ClearMap()
+        {
+            DestroyGrid();
+            ToolData.Instance.MeshDataObj.Clear();
+        }
     }
 }
